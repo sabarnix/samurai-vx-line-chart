@@ -7617,9 +7617,12 @@ var LineChart = function (_React$PureComponent) {
 
       _this.pathRefs[ref.getAttribute('data-index')] = ref;
     }, _this.getIndexMap = function () {
-      return _this.data.charts.map(function (chartData, gIndex) {
-        return _this.isDualAxis() ? [gIndex + '-left', gIndex + '-right'] : chartData.series.map(function (d, lIndex) {
-          return gIndex + '-' + lIndex;
+      return _this.data.charts.map(function (_ref2) {
+        var title = _ref2.title,
+            series = _ref2.series;
+        return series.map(function (_ref3) {
+          var label = _ref3.label;
+          return title + '-' + label;
         });
       });
     }, _this.getPathYFromX = function (index, x) {
@@ -7645,9 +7648,9 @@ var LineChart = function (_React$PureComponent) {
       minHeight: 300,
       colors: ['rgb(107, 157, 255)', 'rgb(252, 137, 159)'],
       tooltipTimeFormat: '%b %d, %H:%M'
-    }, _this.renderLines = function (_ref2, gIndex) {
-      var title = _ref2.title,
-          series = _objectWithoutProperties(_ref2, ['title']);
+    }, _this.renderLines = function (_ref4, gIndex) {
+      var title = _ref4.title,
+          series = _objectWithoutProperties(_ref4, ['title']);
 
       var height = _this.getSingleChartHeight();
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -7666,11 +7669,11 @@ var LineChart = function (_React$PureComponent) {
           },
           title
         ),
-        _this.isDualAxis() ? _this.renderDualAxis(series, gIndex) : _this.renderSingleAxis(series, gIndex)
+        _this.isDualAxis() ? _this.renderDualAxis(series, gIndex, title) : _this.renderSingleAxis(series, gIndex, title)
       );
-    }, _this.renderSingleAxis = function (_ref3, gIndex) {
-      var formattedSeries = _ref3.formattedSeries,
-          yScale = _ref3.yScale;
+    }, _this.renderSingleAxis = function (_ref5, gIndex, title) {
+      var formattedSeries = _ref5.formattedSeries,
+          yScale = _ref5.yScale;
       return [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__vx_grid__["GridRows"], {
         top: _this.getConfig().margin.top,
         left: _this.getConfig().margin.left,
@@ -7680,10 +7683,10 @@ var LineChart = function (_React$PureComponent) {
       }), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_3__vx_group__["Group"],
         { top: _this.getConfig().margin.top, left: _this.getConfig().margin.left },
-        formattedSeries.map(function (_ref4, lIndex) {
-          var label = _ref4.label,
-              seriesData = _ref4.data;
-          return _this.renderLine(seriesData, yScale, gIndex + '-' + lIndex, label);
+        formattedSeries.map(function (_ref6) {
+          var label = _ref6.label,
+              seriesData = _ref6.data;
+          return _this.renderLine(seriesData, yScale, title + '-' + label, label);
         })
       ), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__vx_axis__["AxisLeft"], {
         top: _this.getConfig().margin.top,
@@ -7696,13 +7699,13 @@ var LineChart = function (_React$PureComponent) {
         stroke: '#eaf0f6',
         tickLabelComponent: axisLeftTickLabel
       })];
-    }, _this.renderDualAxis = function (_ref5, gIndex) {
-      var yScaleLeft = _ref5.yScaleLeft,
-          yScaleRight = _ref5.yScaleRight,
-          leftSeriesData = _ref5.leftSeriesData,
-          rightSeriesData = _ref5.rightSeriesData,
-          labelLeft = _ref5.labelLeft,
-          labelRight = _ref5.labelRight;
+    }, _this.renderDualAxis = function (_ref7, gIndex, title) {
+      var yScaleLeft = _ref7.yScaleLeft,
+          yScaleRight = _ref7.yScaleRight,
+          leftSeriesData = _ref7.leftSeriesData,
+          rightSeriesData = _ref7.rightSeriesData,
+          labelLeft = _ref7.labelLeft,
+          labelRight = _ref7.labelRight;
       var parentWidth = _this.props.parentWidth;
 
       return [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__vx_grid__["GridRows"], {
@@ -7714,8 +7717,8 @@ var LineChart = function (_React$PureComponent) {
       }), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_3__vx_group__["Group"],
         { left: _this.getConfig().margin.left, top: _this.getConfig().margin.top },
-        _this.renderLine(leftSeriesData, yScaleLeft, gIndex + '-left', labelLeft),
-        _this.renderLine(rightSeriesData, yScaleRight, gIndex + '-right', labelRight)
+        _this.renderLine(leftSeriesData, yScaleLeft, title + '-' + labelLeft, labelLeft),
+        _this.renderLine(rightSeriesData, yScaleRight, title + '-' + labelRight, labelRight)
       ), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__vx_axis__["AxisLeft"], {
         top: _this.getConfig().margin.top,
         left: _this.getConfig().margin.left,
@@ -7739,7 +7742,7 @@ var LineChart = function (_React$PureComponent) {
       })];
     }, _this.renderLine = function (seriesData, yScale, id, label) {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__vx_shape__["LinePath"], {
-        key: id + label,
+        key: id,
         'data-index': id,
         data: seriesData,
         xScale: _this.xScale,
@@ -7798,9 +7801,9 @@ var LineChart = function (_React$PureComponent) {
           dates: data.dates.map(function (d) {
             return new Date(d);
           }),
-          charts: data.charts.map(function (_ref6) {
-            var title = _ref6.title,
-                series = _ref6.series;
+          charts: data.charts.map(function (_ref8) {
+            var title = _ref8.title,
+                series = _ref8.series;
 
             if (_this2.isDualAxis(data)) {
               var _series = _slicedToArray(series, 2),
@@ -7824,16 +7827,16 @@ var LineChart = function (_React$PureComponent) {
                 rightSeriesData: _this2.getFormattedSeriesData(seriesRight, data.dates)
               };
             }
-            var allData = series.reduce(function (acc, _ref7) {
-              var seriesData = _ref7.data;
+            var allData = series.reduce(function (acc, _ref9) {
+              var seriesData = _ref9.data;
               return [].concat(_toConsumableArray(acc), _toConsumableArray(seriesData));
             }, []);
             return {
               title: title,
               series: series,
-              formattedSeries: series.map(function (_ref8) {
-                var seriesData = _ref8.data,
-                    rest = _objectWithoutProperties(_ref8, ['data']);
+              formattedSeries: series.map(function (_ref10) {
+                var seriesData = _ref10.data,
+                    rest = _objectWithoutProperties(_ref10, ['data']);
 
                 return _extends({ data: _this2.getFormattedSeriesData(seriesData, data.dates) }, rest);
               }),
@@ -7925,11 +7928,11 @@ var LineChart = function (_React$PureComponent) {
                       var effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
 
                       showTooltip({
-                        tooltipData: data.charts.map(function (_ref9) {
-                          var series = _ref9.series;
-                          return { date: dates[effectiveIndex], data: series.map(function (_ref10) {
-                              var label = _ref10.label,
-                                  seriesData = _ref10.data;
+                        tooltipData: data.charts.map(function (_ref11) {
+                          var series = _ref11.series;
+                          return { date: dates[effectiveIndex], data: series.map(function (_ref12) {
+                              var label = _ref12.label,
+                                  seriesData = _ref12.data;
                               return { label: label, data: seriesData[effectiveIndex] };
                             }) };
                         }),

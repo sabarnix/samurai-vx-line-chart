@@ -78,8 +78,8 @@ export class LineChart extends React.PureComponent {
     this.pathRefs[ref.getAttribute('data-index')] = ref;
   };
 
-  getIndexMap = () => this.data.charts.map((chartData, gIndex) =>
-    this.isDualAxis() ? [`${gIndex}-left`, `${gIndex}-right`] : chartData.series.map((d, lIndex) => `${gIndex}-${lIndex}`));
+  getIndexMap = () => this.data.charts.map(({ title, series }) =>
+    series.map(({ label }) => `${title}-${label}`));
 
   getPathYFromX = (index, x) => {
     const path = this.pathRefs[index];
@@ -167,12 +167,12 @@ export class LineChart extends React.PureComponent {
         >
           {title}
         </TextOutline>
-        {this.isDualAxis() ? this.renderDualAxis(series, gIndex) : this.renderSingleAxis(series, gIndex)}
+        {this.isDualAxis() ? this.renderDualAxis(series, gIndex, title) : this.renderSingleAxis(series, gIndex, title)}
       </Group>
     );
   };
 
-  renderSingleAxis = ({ formattedSeries, yScale }, gIndex) => [
+  renderSingleAxis = ({ formattedSeries, yScale }, gIndex, title) => [
     <GridRows
       top={this.getConfig().margin.top}
       left={this.getConfig().margin.left}
@@ -181,7 +181,7 @@ export class LineChart extends React.PureComponent {
       width={this.xMax}
     />,
     <Group top={this.getConfig().margin.top} left={this.getConfig().margin.left}>
-      {formattedSeries.map(({ label, data: seriesData }, lIndex) => this.renderLine(seriesData, yScale, `${gIndex}-${lIndex}`, label))}
+      {formattedSeries.map(({ label, data: seriesData }) => this.renderLine(seriesData, yScale, `${title}-${label}`, label))}
     </Group>,
     <AxisLeft
       top={this.getConfig().margin.top}
@@ -198,7 +198,7 @@ export class LineChart extends React.PureComponent {
 
   renderDualAxis = ({
     yScaleLeft, yScaleRight, leftSeriesData, rightSeriesData, labelLeft, labelRight,
-  }, gIndex) => {
+  }, gIndex, title) => {
     const { parentWidth } = this.props;
     return [
       <GridRows
@@ -209,8 +209,8 @@ export class LineChart extends React.PureComponent {
         width={this.xMax}
       />,
       <Group left={this.getConfig().margin.left} top={this.getConfig().margin.top}>
-        {this.renderLine(leftSeriesData, yScaleLeft, `${gIndex}-left`, labelLeft)}
-        {this.renderLine(rightSeriesData, yScaleRight, `${gIndex}-right`, labelRight)}
+        {this.renderLine(leftSeriesData, yScaleLeft, `${title}-${labelLeft}`, labelLeft)}
+        {this.renderLine(rightSeriesData, yScaleRight, `${title}-${labelRight}`, labelRight)}
       </Group>,
       <AxisLeft
         top={this.getConfig().margin.top}
@@ -239,7 +239,7 @@ export class LineChart extends React.PureComponent {
 
   renderLine = (seriesData, yScale, id, label) => (
     <LinePath
-      key={id + label}
+      key={id}
       data-index={id}
       data={seriesData}
       xScale={this.xScale}
