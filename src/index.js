@@ -53,6 +53,31 @@ export class LineChart extends React.PureComponent {
     this.update(nextProps);
   }
 
+  onMouseMove = (data) => (event) => {
+    const { showTooltip } = this.props;
+    const { dates } = this.data;
+    const { x: xPoint } = localPoint(this.svg, event);
+    const x0 = this.xScale.invert(xPoint - this.getConfig().margin.left);
+    const xAxisBisector = bisector((d) => d).left;
+    const index = xAxisBisector(dates, x0, 1);
+    const d0 = dates[index - 1];
+    const d1 = dates[index];
+    const effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
+
+    showTooltip({
+      tooltipData: data.charts.map(({ series, hasTooltip }) => ({
+        date: (hasTooltip) ? this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : this.tooltipTimeFormat(dates[effectiveIndex]),
+        data: series.map(({ label, data: seriesData, tooltip = [] }) => ({
+          label: (tooltip.length) ? this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
+          data: seriesData[effectiveIndex],
+        })),
+      })),
+      tooltipLeft: this.xScale(dates[effectiveIndex]),
+    });
+  };
+
+  onMouseLeave = () => () => this.props.hideTooltip();
+
   getSingleChartHeight = (props = this.props) => {
     const { parentHeight, data } = props;
     const { minHeight } = this.getConfig();
@@ -105,12 +130,13 @@ export class LineChart extends React.PureComponent {
       this.data = {
         ...data,
         dates: data.dates.map((d) => new Date(d)),
-        charts: data.charts.map(({ title, series }) => {
+        charts: data.charts.map(({ title, series, hasTooltip }) => {
           if (this.isDualAxis(data)) {
             const [{ data: seriesLeft = [], label: labelLeft }, { data: seriesRight = [], label: labelRight }] = series;
             return {
               title,
               series,
+              hasTooltip,
               labelLeft,
               labelRight,
               yScaleLeft: getYScale(seriesLeft, this.yMax),
@@ -123,6 +149,7 @@ export class LineChart extends React.PureComponent {
           return {
             title,
             series,
+            hasTooltip,
             formattedSeries: series.map(({ data: seriesData, ...rest }) => ({ data: this.getFormattedSeriesData(seriesData, data.dates), ...rest })),
             yScale: getYScale(allData, this.yMax),
           };
@@ -138,6 +165,7 @@ export class LineChart extends React.PureComponent {
     });
 
     this.tooltipTimeFormat = timeFormat(this.getConfig(props).tooltipTimeFormat);
+    this.tooltipTimeFormatWithoutDate = timeFormat(this.getConfig(props).tooltipTimeFormatWithoutDate);
   }
 
   isDualAxis = (data = this.data) => data.axes.length === 2;
@@ -152,6 +180,7 @@ export class LineChart extends React.PureComponent {
     minHeight: 300,
     colors: ['rgb(107, 157, 255)', 'rgb(252, 137, 159)'],
     tooltipTimeFormat: '%b %d, %H:%M',
+    tooltipTimeFormatWithoutDate: '%H:%M',
   };
 
   lineDefinedFunc = (d) => {
@@ -269,9 +298,6 @@ export class LineChart extends React.PureComponent {
       parentHeight,
       tooltipData,
       tooltipLeft,
-      tooltipTop,
-      showTooltip,
-      hideTooltip,
     } = this.props;
 
     if (!this.data) {
@@ -309,7 +335,7 @@ export class LineChart extends React.PureComponent {
           }}
         >
           <div style={{ position: 'relative', height: height * this.data.charts.length }}>
-            <svg width={width} height={(height * this.data.charts.length) + this.getConfig().margin.bottom} ref={(s) => (this.svg = s)}>
+            <svg width={width} height={(height * this.data.charts.length) + this.getConfig().margin.bottom} ref={(s) => { this.svg = s; }}>
               <rect x={0} y={0} width={width} height={height * this.data.charts.length} fill="white" />
               {this.data.charts.map(this.renderLines)}
               <Group>
@@ -318,22 +344,8 @@ export class LineChart extends React.PureComponent {
                   width={width}
                   height={height * this.data.charts.length}
                   fill="transparent"
-                  onMouseLeave={() => () => hideTooltip()}
-                  onMouseMove={(data) => (event) => {
-                    const { dates } = this.data;
-                    const { x: xPoint } = localPoint(this.svg, event);
-                    const x0 = this.xScale.invert(xPoint - this.getConfig().margin.left);
-                    const xAxisBisector = bisector((d) => d).left;
-                    const index = xAxisBisector(dates, x0, 1);
-                    const d0 = dates[index - 1];
-                    const d1 = dates[index];
-                    const effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
-
-                    showTooltip({
-                      tooltipData: data.charts.map(({ series }) => ({ date: dates[effectiveIndex], data: series.map(({ label, data: seriesData }) => ({ label, data: seriesData[effectiveIndex] })) })),
-                      tooltipLeft: this.xScale(dates[effectiveIndex]),
-                    });
-                  }}
+                  onMouseLeave={this.onMouseLeave}
+                  onMouseMove={this.onMouseMove}
                 />
               </Group>
               {tooltipData &&
@@ -372,7 +384,6 @@ export class LineChart extends React.PureComponent {
                   singleChartHeight={this.getSingleChartHeight()}
                   xMax={this.xMax}
                   opacity={style.opacity}
-                  timeFormat={this.tooltipTimeFormat}
                   colorScale={this.legendScale}
                 />)}
               </Motion>}
@@ -395,9 +406,14 @@ export class LineChart extends React.PureComponent {
 
 LineChart.propTypes = {
   data: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   config: PropTypes.object,
   parentWidth: PropTypes.number,
   parentHeight: PropTypes.number,
+  hideTooltip: PropTypes.func,
+  showTooltip: PropTypes.func,
+  tooltipData: PropTypes.array,
+  tooltipLeft: PropTypes.number,
 };
 
 export default withParentSize(withTooltip(LineChart));
