@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import HorizontalListWrapper from 'list-wrapper';
 import { LinePath, Bar } from '@vx/shape';
 import { Group } from '@vx/group';
 import { curveCatmullRom } from '@vx/curve';
@@ -19,6 +20,7 @@ import HoverLine from './hoverline';
 import Tooltips from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
 import findPathYatX from './utils/findPathYatX';
+require('./style.scss');
 
 const axisLeftTickLabel = (
   <text
@@ -152,6 +154,13 @@ export class LineChart extends React.PureComponent {
     tooltipTimeFormat: '%b %d, %H:%M',
   };
 
+  lineDefinedFunc = (d) => {
+    if (d[1] !== null) {
+      return true;
+    }
+    return false;
+  };
+
   renderLines = ({ title, ...series }, gIndex) => {
     const height = this.getSingleChartHeight();
     return (
@@ -246,6 +255,7 @@ export class LineChart extends React.PureComponent {
       yScale={yScale}
       x={this.x}
       y={this.y}
+      defined={this.lineDefinedFunc}
       stroke={this.legendScale(label)}
       strokeLinecap="round"
       curve={curveCatmullRom}
@@ -271,14 +281,33 @@ export class LineChart extends React.PureComponent {
     const width = parentWidth;
     const height = this.getSingleChartHeight();
 
+    const arrowStyle = {
+      height: '20px',
+      width: '20px',
+      backgroundColor: '#f5f5f5',
+      marginTop: '-5px',
+      marginBottom: '5px',
+    };
+
     return (
       <div style={{ background: '#fff' }}>
-        <LegendOrdinal
-          scale={this.legendScale}
-          direction="row"
-          labelMargin="0 15px 0 0"
-        />
-        <div id="charts" style={{ height: parentHeight - 30 - 30, overflowY: 'auto', cursor: 'crosshair' }}>
+        <HorizontalListWrapper parentWidth={parentWidth} rightOffset={85} isVisible arrowStyle={arrowStyle} wrapperClassName="list-wrapper-prop">
+          <LegendOrdinal
+            scale={this.legendScale}
+            direction="row"
+            labelMargin="0 15px 0 0"
+            style={{
+              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px',
+            }}
+
+          />
+        </HorizontalListWrapper>
+        <div
+          id="charts"
+          style={{
+            height: parentHeight - 30 - 30, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
+          }}
+        >
           <div style={{ position: 'relative', height: height * this.data.charts.length }}>
             <svg width={width} height={(height * this.data.charts.length) + this.getConfig().margin.bottom} ref={(s) => (this.svg = s)}>
               <rect x={0} y={0} width={width} height={height * this.data.charts.length} fill="white" />

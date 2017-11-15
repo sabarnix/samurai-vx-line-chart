@@ -13,6 +13,10 @@ module.exports = {
   module: {
     rules: [
       // add your custom rules.
+        {
+          test: /\.scss$/,
+          use: ['style-loader', 'css-loader', 'sass-loader']
+        }
     ],
   },
 };
