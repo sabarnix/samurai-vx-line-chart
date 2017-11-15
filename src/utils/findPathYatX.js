@@ -1,13 +1,11 @@
 const pathYCache = {};
 
-export default function getPathYFromX(x, path, name, error) {
+export default function getPathYFromX(x, path, name, error = 0.01) {
   const key = `${name}-${x}`;
 
   if (key in pathYCache) {
     return pathYCache[key];
   }
-
-  error = error || 0.01;
 
   const maxIterations = 100;
 

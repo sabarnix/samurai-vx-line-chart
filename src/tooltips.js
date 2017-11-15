@@ -74,7 +74,6 @@ Tooltips.propTypes = {
   singleChartHeight: PropTypes.number,
   xMax: PropTypes.number,
   opacity: PropTypes.number,
-  timeFormat: PropTypes.func,
   colorScale: PropTypes.func,
 };
 
