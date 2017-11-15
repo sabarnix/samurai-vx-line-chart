@@ -7647,7 +7647,8 @@ var LineChart = function (_React$PureComponent) {
       },
       minHeight: 300,
       colors: ['rgb(107, 157, 255)', 'rgb(252, 137, 159)'],
-      tooltipTimeFormat: '%b %d, %H:%M'
+      tooltipTimeFormat: '%b %d, %H:%M',
+      tooltipTimeFormatWithoutDate: '%H:%M'
     }, _this.renderLines = function (_ref4, gIndex) {
       var title = _ref4.title,
           series = _objectWithoutProperties(_ref4, ['title']);
@@ -7754,6 +7755,48 @@ var LineChart = function (_React$PureComponent) {
         curve: __WEBPACK_IMPORTED_MODULE_4__vx_curve__["curveCatmullRom"],
         innerRef: _this.setPathRef
       });
+    }, _this.onMouseMove = function (data) {
+      return function (event) {
+        var showTooltip = _this.props.showTooltip;
+        var dates = _this.data.dates;
+
+        var _localPoint = Object(__WEBPACK_IMPORTED_MODULE_12__vx_event__["localPoint"])(_this.svg, event),
+            xPoint = _localPoint.x;
+
+        var x0 = _this.xScale.invert(xPoint - _this.getConfig().margin.left);
+        var xAxisBisector = Object(__WEBPACK_IMPORTED_MODULE_13_d3_array__["c" /* bisector */])(function (d) {
+          return d;
+        }).left;
+        var index = xAxisBisector(dates, x0, 1);
+        var d0 = dates[index - 1];
+        var d1 = dates[index];
+        var effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
+
+        showTooltip({
+          tooltipData: data.charts.map(function (_ref8) {
+            var series = _ref8.series,
+                hasTooltip = _ref8.hasTooltip;
+            return {
+              date: hasTooltip ? _this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : _this.tooltipTimeFormat(dates[effectiveIndex]),
+              data: series.map(function (_ref9) {
+                var label = _ref9.label,
+                    seriesData = _ref9.data,
+                    _ref9$tooltip = _ref9.tooltip,
+                    tooltip = _ref9$tooltip === undefined ? [] : _ref9$tooltip;
+                return {
+                  label: tooltip.length ? _this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
+                  data: seriesData[effectiveIndex]
+                };
+              })
+            };
+          }),
+          tooltipLeft: _this.xScale(dates[effectiveIndex])
+        });
+      };
+    }, _this.onMouseLeave = function () {
+      return function () {
+        return _this.props.hideTooltip();
+      };
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -7801,9 +7844,10 @@ var LineChart = function (_React$PureComponent) {
           dates: data.dates.map(function (d) {
             return new Date(d);
           }),
-          charts: data.charts.map(function (_ref8) {
-            var title = _ref8.title,
-                series = _ref8.series;
+          charts: data.charts.map(function (_ref10) {
+            var title = _ref10.title,
+                series = _ref10.series,
+                hasTooltip = _ref10.hasTooltip;
 
             if (_this2.isDualAxis(data)) {
               var _series = _slicedToArray(series, 2),
@@ -7819,6 +7863,7 @@ var LineChart = function (_React$PureComponent) {
               return {
                 title: title,
                 series: series,
+                hasTooltip: hasTooltip,
                 labelLeft: labelLeft,
                 labelRight: labelRight,
                 yScaleLeft: Object(__WEBPACK_IMPORTED_MODULE_19__utils_scales__["b" /* getYScale */])(seriesLeft, _this2.yMax),
@@ -7827,16 +7872,17 @@ var LineChart = function (_React$PureComponent) {
                 rightSeriesData: _this2.getFormattedSeriesData(seriesRight, data.dates)
               };
             }
-            var allData = series.reduce(function (acc, _ref9) {
-              var seriesData = _ref9.data;
+            var allData = series.reduce(function (acc, _ref11) {
+              var seriesData = _ref11.data;
               return [].concat(_toConsumableArray(acc), _toConsumableArray(seriesData));
             }, []);
             return {
               title: title,
               series: series,
-              formattedSeries: series.map(function (_ref10) {
-                var seriesData = _ref10.data,
-                    rest = _objectWithoutProperties(_ref10, ['data']);
+              hasTooltip: hasTooltip,
+              formattedSeries: series.map(function (_ref12) {
+                var seriesData = _ref12.data,
+                    rest = _objectWithoutProperties(_ref12, ['data']);
 
                 return _extends({ data: _this2.getFormattedSeriesData(seriesData, data.dates) }, rest);
               }),
@@ -7854,6 +7900,7 @@ var LineChart = function (_React$PureComponent) {
       });
 
       this.tooltipTimeFormat = Object(__WEBPACK_IMPORTED_MODULE_16_d3_time_format__["a" /* timeFormat */])(this.getConfig(props).tooltipTimeFormat);
+      this.tooltipTimeFormatWithoutDate = Object(__WEBPACK_IMPORTED_MODULE_16_d3_time_format__["a" /* timeFormat */])(this.getConfig(props).tooltipTimeFormatWithoutDate);
     }
   }, {
     key: 'render',
@@ -7864,10 +7911,7 @@ var LineChart = function (_React$PureComponent) {
           parentWidth = _props.parentWidth,
           parentHeight = _props.parentHeight,
           tooltipData = _props.tooltipData,
-          tooltipLeft = _props.tooltipLeft,
-          tooltipTop = _props.tooltipTop,
-          showTooltip = _props.showTooltip,
-          hideTooltip = _props.hideTooltip;
+          tooltipLeft = _props.tooltipLeft;
 
 
       if (!this.data) {
@@ -7906,40 +7950,8 @@ var LineChart = function (_React$PureComponent) {
                   width: width,
                   height: height * this.data.charts.length,
                   fill: 'transparent',
-                  onMouseLeave: function onMouseLeave() {
-                    return function () {
-                      return hideTooltip();
-                    };
-                  },
-                  onMouseMove: function onMouseMove(data) {
-                    return function (event) {
-                      var dates = _this3.data.dates;
-
-                      var _localPoint = Object(__WEBPACK_IMPORTED_MODULE_12__vx_event__["localPoint"])(_this3.svg, event),
-                          xPoint = _localPoint.x;
-
-                      var x0 = _this3.xScale.invert(xPoint - _this3.getConfig().margin.left);
-                      var xAxisBisector = Object(__WEBPACK_IMPORTED_MODULE_13_d3_array__["c" /* bisector */])(function (d) {
-                        return d;
-                      }).left;
-                      var index = xAxisBisector(dates, x0, 1);
-                      var d0 = dates[index - 1];
-                      var d1 = dates[index];
-                      var effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
-
-                      showTooltip({
-                        tooltipData: data.charts.map(function (_ref11) {
-                          var series = _ref11.series;
-                          return { date: dates[effectiveIndex], data: series.map(function (_ref12) {
-                              var label = _ref12.label,
-                                  seriesData = _ref12.data;
-                              return { label: label, data: seriesData[effectiveIndex] };
-                            }) };
-                        }),
-                        tooltipLeft: _this3.xScale(dates[effectiveIndex])
-                      });
-                    };
-                  }
+                  onMouseLeave: this.onMouseLeave,
+                  onMouseMove: this.onMouseMove
                 })
               ),
               tooltipData && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -7983,7 +7995,6 @@ var LineChart = function (_React$PureComponent) {
                   singleChartHeight: _this3.getSingleChartHeight(),
                   xMax: _this3.xMax,
                   opacity: style.opacity,
-                  timeFormat: _this3.tooltipTimeFormat,
                   colorScale: _this3.legendScale
                 });
               }
@@ -8013,7 +8024,11 @@ LineChart.propTypes = {
   data: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object.isRequired,
   config: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
   parentWidth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
-  parentHeight: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number
+  parentHeight: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
+  hideTooltip: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
+  showTooltip: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
+  tooltipData: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.array,
+  tooltipLeft: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(__WEBPACK_IMPORTED_MODULE_5__vx_responsive__["withParentSize"])(Object(__WEBPACK_IMPORTED_MODULE_11__vx_tooltip__["withTooltip"])(LineChart)));
@@ -37415,7 +37430,6 @@ function Tooltips(_ref) {
       singleChartHeight = _ref.singleChartHeight,
       xMax = _ref.xMax,
       opacity = _ref.opacity,
-      timeFormat = _ref.timeFormat,
       colorScale = _ref.colorScale;
 
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -37440,7 +37454,7 @@ function Tooltips(_ref) {
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'li',
             { className: 'tooltip-header' },
-            timeFormat(date)
+            date
           ),
           tooltipData.map(function (_ref3) {
             var label = _ref3.label,

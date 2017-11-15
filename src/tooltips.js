@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const formatNumber = format(',');
 
 function Tooltips({
-  top, left, data, singleChartHeight, xMax, opacity, timeFormat, colorScale,
+  top, left, data, singleChartHeight, xMax, opacity, colorScale,
 }) {
   return (
     <div style={{ opacity }} className="samurai-vx-tooltip">
@@ -20,7 +20,7 @@ function Tooltips({
           }}
         >
           <ul className="tooltip-data">
-            <li className="tooltip-header">{timeFormat(date)}</li>
+            <li className="tooltip-header">{date}</li>
             {tooltipData.map(({ label, data: pointData }) =>
               (
                 <li key={pointData + label}>
