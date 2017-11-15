@@ -1,5 +1,5 @@
 import { scaleLinear, scaleTime } from '@vx/scale';
-import { max, extent, min } from 'd3-array';
+import { max, extent } from 'd3-array';
 export const getXScale = (data, xMax) => scaleTime({
   domain: extent(data),
   range: [0, xMax],
