@@ -746,15 +746,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__src_merge__ = __webpack_require__(222);
 /* unused harmony reexport merge */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__src_min__ = __webpack_require__(106);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return __WEBPACK_IMPORTED_MODULE_15__src_min__["a"]; });
+/* unused harmony reexport min */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__src_pairs__ = __webpack_require__(98);
 /* unused harmony reexport pairs */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__src_permute__ = __webpack_require__(223);
 /* unused harmony reexport permute */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__src_quantile__ = __webpack_require__(51);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return __WEBPACK_IMPORTED_MODULE_18__src_quantile__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return __WEBPACK_IMPORTED_MODULE_18__src_quantile__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__src_range__ = __webpack_require__(103);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_19__src_range__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return __WEBPACK_IMPORTED_MODULE_19__src_range__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__src_scan__ = __webpack_require__(224);
 /* unused harmony reexport scan */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__src_shuffle__ = __webpack_require__(225);
@@ -762,9 +762,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__src_sum__ = __webpack_require__(226);
 /* unused harmony reexport sum */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__src_ticks__ = __webpack_require__(104);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["c"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["c"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__src_transpose__ = __webpack_require__(107);
 /* unused harmony reexport transpose */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__src_variance__ = __webpack_require__(100);
@@ -1865,7 +1865,7 @@ function linearish(scale) {
 
   scale.ticks = function(count) {
     var d = domain();
-    return Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["k" /* ticks */])(d[0], d[d.length - 1], count == null ? 10 : count);
+    return Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* ticks */])(d[0], d[d.length - 1], count == null ? 10 : count);
   };
 
   scale.tickFormat = function(count, specifier) {
@@ -1887,16 +1887,16 @@ function linearish(scale) {
       step = i0, i0 = i1, i1 = step;
     }
 
-    step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickIncrement */])(start, stop, count);
+    step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* tickIncrement */])(start, stop, count);
 
     if (step > 0) {
       start = Math.floor(start / step) * step;
       stop = Math.ceil(stop / step) * step;
-      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickIncrement */])(start, stop, count);
+      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* tickIncrement */])(start, stop, count);
     } else if (step < 0) {
       start = Math.ceil(start * step) / step;
       stop = Math.floor(stop * step) / step;
-      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickIncrement */])(start, stop, count);
+      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* tickIncrement */])(start, stop, count);
     }
 
     if (step > 0) {
@@ -6312,14 +6312,14 @@ function calendar(year, month, week, day, hour, minute, second, millisecond, for
       var target = Math.abs(stop - start) / interval,
           i = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["c" /* bisector */])(function(i) { return i[2]; }).right(tickIntervals, target);
       if (i === tickIntervals.length) {
-        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* tickStep */])(start / durationYear, stop / durationYear, interval);
+        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickStep */])(start / durationYear, stop / durationYear, interval);
         interval = year;
       } else if (i) {
         i = tickIntervals[target / tickIntervals[i - 1][2] < tickIntervals[i][2] / target ? i - 1 : i];
         step = i[1];
         interval = i[0];
       } else {
-        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* tickStep */])(start, stop, interval);
+        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickStep */])(start, stop, interval);
         interval = millisecond;
       }
     }
@@ -7592,7 +7592,49 @@ var LineChart = function (_React$PureComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = LineChart.__proto__ || Object.getPrototypeOf(LineChart)).call.apply(_ref, [this].concat(args))), _this), _this.getSingleChartHeight = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = LineChart.__proto__ || Object.getPrototypeOf(LineChart)).call.apply(_ref, [this].concat(args))), _this), _this.onMouseMove = function (data) {
+      return function (event) {
+        var showTooltip = _this.props.showTooltip;
+        var dates = _this.data.dates;
+
+        var _localPoint = Object(__WEBPACK_IMPORTED_MODULE_12__vx_event__["localPoint"])(_this.svg, event),
+            xPoint = _localPoint.x;
+
+        var x0 = _this.xScale.invert(xPoint - _this.getConfig().margin.left);
+        var xAxisBisector = Object(__WEBPACK_IMPORTED_MODULE_13_d3_array__["c" /* bisector */])(function (d) {
+          return d;
+        }).left;
+        var index = xAxisBisector(dates, x0, 1);
+        var d0 = dates[index - 1];
+        var d1 = dates[index];
+        var effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
+
+        showTooltip({
+          tooltipData: data.charts.map(function (_ref2) {
+            var series = _ref2.series,
+                hasTooltip = _ref2.hasTooltip;
+            return {
+              date: hasTooltip ? _this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : _this.tooltipTimeFormat(dates[effectiveIndex]),
+              data: series.map(function (_ref3) {
+                var label = _ref3.label,
+                    seriesData = _ref3.data,
+                    _ref3$tooltip = _ref3.tooltip,
+                    tooltip = _ref3$tooltip === undefined ? [] : _ref3$tooltip;
+                return {
+                  label: tooltip.length ? _this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
+                  data: seriesData[effectiveIndex]
+                };
+              })
+            };
+          }),
+          tooltipLeft: _this.xScale(dates[effectiveIndex])
+        });
+      };
+    }, _this.onMouseLeave = function () {
+      return function () {
+        return _this.props.hideTooltip();
+      };
+    }, _this.getSingleChartHeight = function () {
       var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.props;
       var parentHeight = props.parentHeight,
           data = props.data;
@@ -7617,11 +7659,11 @@ var LineChart = function (_React$PureComponent) {
 
       _this.pathRefs[ref.getAttribute('data-index')] = ref;
     }, _this.getIndexMap = function () {
-      return _this.data.charts.map(function (_ref2) {
-        var title = _ref2.title,
-            series = _ref2.series;
-        return series.map(function (_ref3) {
-          var label = _ref3.label;
+      return _this.data.charts.map(function (_ref4) {
+        var title = _ref4.title,
+            series = _ref4.series;
+        return series.map(function (_ref5) {
+          var label = _ref5.label;
           return title + '-' + label;
         });
       });
@@ -7649,9 +7691,9 @@ var LineChart = function (_React$PureComponent) {
       colors: ['rgb(107, 157, 255)', 'rgb(252, 137, 159)'],
       tooltipTimeFormat: '%b %d, %H:%M',
       tooltipTimeFormatWithoutDate: '%H:%M'
-    }, _this.renderLines = function (_ref4, gIndex) {
-      var title = _ref4.title,
-          series = _objectWithoutProperties(_ref4, ['title']);
+    }, _this.renderLines = function (_ref6, gIndex) {
+      var title = _ref6.title,
+          series = _objectWithoutProperties(_ref6, ['title']);
 
       var height = _this.getSingleChartHeight();
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -7672,9 +7714,9 @@ var LineChart = function (_React$PureComponent) {
         ),
         _this.isDualAxis() ? _this.renderDualAxis(series, gIndex, title) : _this.renderSingleAxis(series, gIndex, title)
       );
-    }, _this.renderSingleAxis = function (_ref5, gIndex, title) {
-      var formattedSeries = _ref5.formattedSeries,
-          yScale = _ref5.yScale;
+    }, _this.renderSingleAxis = function (_ref7, gIndex, title) {
+      var formattedSeries = _ref7.formattedSeries,
+          yScale = _ref7.yScale;
       return [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__vx_grid__["GridRows"], {
         top: _this.getConfig().margin.top,
         left: _this.getConfig().margin.left,
@@ -7684,9 +7726,9 @@ var LineChart = function (_React$PureComponent) {
       }), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_3__vx_group__["Group"],
         { top: _this.getConfig().margin.top, left: _this.getConfig().margin.left },
-        formattedSeries.map(function (_ref6) {
-          var label = _ref6.label,
-              seriesData = _ref6.data;
+        formattedSeries.map(function (_ref8) {
+          var label = _ref8.label,
+              seriesData = _ref8.data;
           return _this.renderLine(seriesData, yScale, title + '-' + label, label);
         })
       ), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__vx_axis__["AxisLeft"], {
@@ -7700,13 +7742,13 @@ var LineChart = function (_React$PureComponent) {
         stroke: '#eaf0f6',
         tickLabelComponent: axisLeftTickLabel
       })];
-    }, _this.renderDualAxis = function (_ref7, gIndex, title) {
-      var yScaleLeft = _ref7.yScaleLeft,
-          yScaleRight = _ref7.yScaleRight,
-          leftSeriesData = _ref7.leftSeriesData,
-          rightSeriesData = _ref7.rightSeriesData,
-          labelLeft = _ref7.labelLeft,
-          labelRight = _ref7.labelRight;
+    }, _this.renderDualAxis = function (_ref9, gIndex, title) {
+      var yScaleLeft = _ref9.yScaleLeft,
+          yScaleRight = _ref9.yScaleRight,
+          leftSeriesData = _ref9.leftSeriesData,
+          rightSeriesData = _ref9.rightSeriesData,
+          labelLeft = _ref9.labelLeft,
+          labelRight = _ref9.labelRight;
       var parentWidth = _this.props.parentWidth;
 
       return [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__vx_grid__["GridRows"], {
@@ -7755,48 +7797,6 @@ var LineChart = function (_React$PureComponent) {
         curve: __WEBPACK_IMPORTED_MODULE_4__vx_curve__["curveCatmullRom"],
         innerRef: _this.setPathRef
       });
-    }, _this.onMouseMove = function (data) {
-      return function (event) {
-        var showTooltip = _this.props.showTooltip;
-        var dates = _this.data.dates;
-
-        var _localPoint = Object(__WEBPACK_IMPORTED_MODULE_12__vx_event__["localPoint"])(_this.svg, event),
-            xPoint = _localPoint.x;
-
-        var x0 = _this.xScale.invert(xPoint - _this.getConfig().margin.left);
-        var xAxisBisector = Object(__WEBPACK_IMPORTED_MODULE_13_d3_array__["c" /* bisector */])(function (d) {
-          return d;
-        }).left;
-        var index = xAxisBisector(dates, x0, 1);
-        var d0 = dates[index - 1];
-        var d1 = dates[index];
-        var effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
-
-        showTooltip({
-          tooltipData: data.charts.map(function (_ref8) {
-            var series = _ref8.series,
-                hasTooltip = _ref8.hasTooltip;
-            return {
-              date: hasTooltip ? _this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : _this.tooltipTimeFormat(dates[effectiveIndex]),
-              data: series.map(function (_ref9) {
-                var label = _ref9.label,
-                    seriesData = _ref9.data,
-                    _ref9$tooltip = _ref9.tooltip,
-                    tooltip = _ref9$tooltip === undefined ? [] : _ref9$tooltip;
-                return {
-                  label: tooltip.length ? _this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
-                  data: seriesData[effectiveIndex]
-                };
-              })
-            };
-          }),
-          tooltipLeft: _this.xScale(dates[effectiveIndex])
-        });
-      };
-    }, _this.onMouseLeave = function () {
-      return function () {
-        return _this.props.hideTooltip();
-      };
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -7938,7 +7938,7 @@ var LineChart = function (_React$PureComponent) {
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'svg',
               { width: width, height: height * this.data.charts.length + this.getConfig().margin.bottom, ref: function ref(s) {
-                  return _this3.svg = s;
+                  _this3.svg = s;
                 } },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('rect', { x: 0, y: 0, width: width, height: height * this.data.charts.length, fill: 'white' }),
               this.data.charts.map(this.renderLines),
@@ -8022,6 +8022,7 @@ var LineChart = function (_React$PureComponent) {
 
 LineChart.propTypes = {
   data: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   config: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
   parentWidth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
   parentHeight: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
@@ -14061,7 +14062,7 @@ function band() {
     start += (stop - start - step * (n - paddingInner)) * align;
     bandwidth = step * (1 - paddingInner);
     if (round) start = Math.round(start), bandwidth = Math.round(bandwidth);
-    var values = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* range */])(n).map(function(i) { return start + step * i; });
+    var values = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["g" /* range */])(n).map(function(i) { return start + step * i; });
     return ordinalRange(reverse ? values.reverse() : values);
   }
 
@@ -15358,7 +15359,7 @@ var cubehelixLong = cubehelix(__WEBPACK_IMPORTED_MODULE_1__color__["a" /* defaul
 /* harmony default export */ __webpack_exports__["a"] = (function(domain, count, specifier) {
   var start = domain[0],
       stop = domain[domain.length - 1],
-      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* tickStep */])(start, stop, count == null ? 10 : count),
+      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickStep */])(start, stop, count == null ? 10 : count),
       precision;
   specifier = Object(__WEBPACK_IMPORTED_MODULE_1_d3_format__["c" /* formatSpecifier */])(specifier == null ? ",f" : specifier);
   switch (specifier.type) {
@@ -15651,7 +15652,7 @@ function log() {
         }
       }
     } else {
-      z = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["k" /* ticks */])(i, j, Math.min(j - i, n)).map(pows);
+      z = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* ticks */])(i, j, Math.min(j - i, n)).map(pows);
     }
 
     return r ? z.reverse() : z;
@@ -15754,7 +15755,7 @@ function quantile() {
   function rescale() {
     var i = 0, n = Math.max(1, range.length);
     thresholds = new Array(n - 1);
-    while (++i < n) thresholds[i - 1] = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["g" /* quantile */])(domain, i / n);
+    while (++i < n) thresholds[i - 1] = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["f" /* quantile */])(domain, i / n);
     return scale;
   }
 
@@ -37489,7 +37490,6 @@ Tooltips.propTypes = {
   singleChartHeight: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.number,
   xMax: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.number,
   opacity: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.number,
-  timeFormat: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.func,
   colorScale: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.func
 };
 
@@ -37516,7 +37516,7 @@ var getXScale = function getXScale(data, xMax) {
 
 var getYScale = function getYScale(data, yMax) {
   return Object(__WEBPACK_IMPORTED_MODULE_0__vx_scale__["scaleLinear"])({
-    domain: [Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["f" /* min */])(data), Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["e" /* max */])(data)],
+    domain: [0, Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["e" /* max */])(data)],
     range: [yMax, 0]
   });
 };
@@ -37529,14 +37529,14 @@ var getYScale = function getYScale(data, yMax) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = getPathYFromX;
 var pathYCache = {};
 
-function getPathYFromX(x, path, name, error) {
+function getPathYFromX(x, path, name) {
+  var error = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0.01;
+
   var key = name + "-" + x;
 
   if (key in pathYCache) {
     return pathYCache[key];
   }
-
-  error = error || 0.01;
 
   var maxIterations = 100;
 

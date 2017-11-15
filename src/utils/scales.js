@@ -6,6 +6,6 @@ export const getXScale = (data, xMax) => scaleTime({
 });
 
 export const getYScale = (data, yMax) => scaleLinear({
-  domain: [min(data), max(data)],
+  domain: [0, max(data)],
   range: [yMax, 0],
 });
