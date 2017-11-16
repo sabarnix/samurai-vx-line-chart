@@ -20,6 +20,7 @@ import HoverLine from './hoverline';
 import Tooltips from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
 import findPathYatX from './utils/findPathYatX';
+import Delay from './utils/delay';
 require('./style.scss');
 
 const axisLeftTickLabel = (
@@ -338,16 +339,29 @@ export class LineChart extends React.PureComponent {
             <svg width={width} height={(height * this.data.charts.length) + this.getConfig().margin.bottom} ref={(s) => { this.svg = s; }}>
               <rect x={0} y={0} width={width} height={height * this.data.charts.length} fill="white" />
               {this.data.charts.map(this.renderLines)}
-              <Group>
-                <Bar
-                  data={this.data}
-                  width={width}
-                  height={height * this.data.charts.length}
-                  fill="transparent"
-                  onMouseLeave={this.onMouseLeave}
-                  onMouseMove={this.onMouseMove}
-                />
-              </Group>
+              <Bar
+                data={this.data}
+                width={width}
+                height={height * this.data.charts.length}
+                fill="transparent"
+                onMouseLeave={this.onMouseLeave}
+                onMouseMove={this.onMouseMove}
+              />
+              <Delay initial={0} value={width} period={300}>
+                {(delayed) => (
+                  <Motion defaultStyle={{ x: 0 }} style={{ x: spring(delayed) }}>
+                    {(style) => (
+                      <rect
+                        x={style.x}
+                        y="0"
+                        width={Math.max(width - style.x, 0)}
+                        height={height * this.data.charts.length}
+                        fill="white"
+                      />
+                    )}
+                  </Motion>
+                )}
+              </Delay>
               {tooltipData &&
               <Motion
                 defaultStyle={{ left: 0, opacity: 0 }}
