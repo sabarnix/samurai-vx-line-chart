@@ -746,15 +746,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__src_merge__ = __webpack_require__(223);
 /* unused harmony reexport merge */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__src_min__ = __webpack_require__(106);
-/* unused harmony reexport min */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return __WEBPACK_IMPORTED_MODULE_15__src_min__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__src_pairs__ = __webpack_require__(98);
 /* unused harmony reexport pairs */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__src_permute__ = __webpack_require__(224);
 /* unused harmony reexport permute */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__src_quantile__ = __webpack_require__(51);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return __WEBPACK_IMPORTED_MODULE_18__src_quantile__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return __WEBPACK_IMPORTED_MODULE_18__src_quantile__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__src_range__ = __webpack_require__(103);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return __WEBPACK_IMPORTED_MODULE_19__src_range__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_19__src_range__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__src_scan__ = __webpack_require__(225);
 /* unused harmony reexport scan */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__src_shuffle__ = __webpack_require__(226);
@@ -762,9 +762,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__src_sum__ = __webpack_require__(227);
 /* unused harmony reexport sum */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__src_ticks__ = __webpack_require__(104);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["c"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return __WEBPACK_IMPORTED_MODULE_23__src_ticks__["c"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__src_transpose__ = __webpack_require__(107);
 /* unused harmony reexport transpose */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__src_variance__ = __webpack_require__(100);
@@ -1865,7 +1865,7 @@ function linearish(scale) {
 
   scale.ticks = function(count) {
     var d = domain();
-    return Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* ticks */])(d[0], d[d.length - 1], count == null ? 10 : count);
+    return Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["k" /* ticks */])(d[0], d[d.length - 1], count == null ? 10 : count);
   };
 
   scale.tickFormat = function(count, specifier) {
@@ -1887,16 +1887,16 @@ function linearish(scale) {
       step = i0, i0 = i1, i1 = step;
     }
 
-    step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* tickIncrement */])(start, stop, count);
+    step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickIncrement */])(start, stop, count);
 
     if (step > 0) {
       start = Math.floor(start / step) * step;
       stop = Math.ceil(stop / step) * step;
-      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* tickIncrement */])(start, stop, count);
+      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickIncrement */])(start, stop, count);
     } else if (step < 0) {
       start = Math.ceil(start * step) / step;
       stop = Math.floor(stop * step) / step;
-      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* tickIncrement */])(start, stop, count);
+      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickIncrement */])(start, stop, count);
     }
 
     if (step > 0) {
@@ -6312,14 +6312,14 @@ function calendar(year, month, week, day, hour, minute, second, millisecond, for
       var target = Math.abs(stop - start) / interval,
           i = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["c" /* bisector */])(function(i) { return i[2]; }).right(tickIntervals, target);
       if (i === tickIntervals.length) {
-        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickStep */])(start / durationYear, stop / durationYear, interval);
+        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* tickStep */])(start / durationYear, stop / durationYear, interval);
         interval = year;
       } else if (i) {
         i = tickIntervals[target / tickIntervals[i - 1][2] < tickIntervals[i][2] / target ? i - 1 : i];
         step = i[1];
         interval = i[0];
       } else {
-        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickStep */])(start, stop, interval);
+        step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* tickStep */])(start, stop, interval);
         interval = millisecond;
       }
     }
@@ -17618,7 +17618,7 @@ function band() {
     start += (stop - start - step * (n - paddingInner)) * align;
     bandwidth = step * (1 - paddingInner);
     if (round) start = Math.round(start), bandwidth = Math.round(bandwidth);
-    var values = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["g" /* range */])(n).map(function(i) { return start + step * i; });
+    var values = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["h" /* range */])(n).map(function(i) { return start + step * i; });
     return ordinalRange(reverse ? values.reverse() : values);
   }
 
@@ -18915,7 +18915,7 @@ var cubehelixLong = cubehelix(__WEBPACK_IMPORTED_MODULE_1__color__["a" /* defaul
 /* harmony default export */ __webpack_exports__["a"] = (function(domain, count, specifier) {
   var start = domain[0],
       stop = domain[domain.length - 1],
-      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["i" /* tickStep */])(start, stop, count == null ? 10 : count),
+      step = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* tickStep */])(start, stop, count == null ? 10 : count),
       precision;
   specifier = Object(__WEBPACK_IMPORTED_MODULE_1_d3_format__["c" /* formatSpecifier */])(specifier == null ? ",f" : specifier);
   switch (specifier.type) {
@@ -19208,7 +19208,7 @@ function log() {
         }
       }
     } else {
-      z = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["j" /* ticks */])(i, j, Math.min(j - i, n)).map(pows);
+      z = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["k" /* ticks */])(i, j, Math.min(j - i, n)).map(pows);
     }
 
     return r ? z.reverse() : z;
@@ -19311,7 +19311,7 @@ function quantile() {
   function rescale() {
     var i = 0, n = Math.max(1, range.length);
     thresholds = new Array(n - 1);
-    while (++i < n) thresholds[i - 1] = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["f" /* quantile */])(domain, i / n);
+    while (++i < n) thresholds[i - 1] = Object(__WEBPACK_IMPORTED_MODULE_0_d3_array__["g" /* quantile */])(domain, i / n);
     return scale;
   }
 
@@ -41072,7 +41072,7 @@ var getXScale = function getXScale(data, xMax) {
 
 var getYScale = function getYScale(data, yMax) {
   return Object(__WEBPACK_IMPORTED_MODULE_0__vx_scale__["scaleLinear"])({
-    domain: [0, Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["e" /* max */])(data)],
+    domain: [Math.min(Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["f" /* min */])(data), 0), Math.max(0, Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["e" /* max */])(data))],
     range: [yMax, 0]
   });
 };
