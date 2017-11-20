@@ -203,7 +203,7 @@ export class LineChart extends React.PureComponent {
       })),
       tooltipLeft: this.xScale(dates[effectiveIndex]),
     });
-  }, 100);
+  }, 300);
 
   lineDefinedFunc = (d) => d[1] !== null;
 
@@ -379,7 +379,7 @@ export class LineChart extends React.PureComponent {
                   </Motion>
                 )}
               </Delay>
-              {tooltipData &&
+              {tooltipData && !brush.isBrushing &&
               <Motion
                 defaultStyle={{ left: 0, opacity: 0 }}
                 style={{ left: spring(tooltipLeft || 0), opacity: spring(tooltipData ? 1 : 0) }}
@@ -391,7 +391,7 @@ export class LineChart extends React.PureComponent {
                   }}
                   to={{
                     x: style.left,
-                    y: height * this.data.charts.length,
+                    y: (height * this.data.charts.length) + this.getConfig().margin.bottom,
                   }}
                   tooltipLeft={style.left}
                   indexMap={this.getIndexMap()}
@@ -403,7 +403,7 @@ export class LineChart extends React.PureComponent {
                 />)}
               </Motion>}
             </svg>
-            {tooltipData &&
+            {tooltipData && !brush.isBrushing &&
               <Motion
                 defaultStyle={{ left: 0, opacity: 0 }}
                 style={{ left: spring(tooltipLeft || 0), opacity: spring(tooltipData ? 1 : 0) }}

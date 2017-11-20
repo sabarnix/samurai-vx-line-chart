@@ -7723,7 +7723,7 @@ var LineChart = function (_React$PureComponent) {
         }),
         tooltipLeft: _this.xScale(dates[effectiveIndex])
       });
-    }, 100), _this.lineDefinedFunc = function (d) {
+    }, 300), _this.lineDefinedFunc = function (d) {
       return d[1] !== null;
     }, _this.renderLines = function (_ref6, gIndex) {
       var title = _ref6.title,
@@ -8030,7 +8030,7 @@ var LineChart = function (_React$PureComponent) {
                   );
                 }
               ),
-              tooltipData && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              tooltipData && !brush.isBrushing && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_16_react_motion__["Motion"],
                 {
                   defaultStyle: { left: 0, opacity: 0 },
@@ -8044,7 +8044,7 @@ var LineChart = function (_React$PureComponent) {
                     },
                     to: {
                       x: style.left,
-                      y: height * _this3.data.charts.length
+                      y: height * _this3.data.charts.length + _this3.getConfig().margin.bottom
                     },
                     tooltipLeft: style.left,
                     indexMap: _this3.getIndexMap(),
@@ -8057,7 +8057,7 @@ var LineChart = function (_React$PureComponent) {
                 }
               )
             ),
-            tooltipData && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            tooltipData && !brush.isBrushing && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               __WEBPACK_IMPORTED_MODULE_16_react_motion__["Motion"],
               {
                 defaultStyle: { left: 0, opacity: 0 },
