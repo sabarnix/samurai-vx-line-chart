@@ -16,6 +16,9 @@ import { bisector } from 'd3-array';
 import { format } from 'd3-format';
 import { Motion, spring } from 'react-motion';
 import { timeFormat } from 'd3-time-format';
+import { withBrush, getCoordsFromEvent, BoxBrush } from '@vx/brush';
+import throttle from 'lodash.throttle';
+import shallowEqual from 'fbjs/lib/shallowEqual';
 import HoverLine from './hoverline';
 import Tooltips from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
@@ -23,61 +26,35 @@ import findPathYatX from './utils/findPathYatX';
 import Delay from './utils/delay';
 require('./style.scss');
 
-const axisLeftTickLabel = (
-  <text
-    fill="rgb(25, 29, 34)"
-    opacity="0.20"
-    fontSize={10}
-    dy="0.25em"
-    textAnchor="middle"
-    fontWeight="bold"
-  />
-);
-
-const axisBottomTickLabel = (
-  <text
-    fill="rgb(25, 29, 34)"
-    opacity="0.20"
-    fontSize={10}
-    dy="0.25em"
-    textAnchor="middle"
-    fontWeight="bold"
-  />
-);
-
 export class LineChart extends React.PureComponent {
   componentWillMount() {
     this.update();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.update(nextProps);
+    if (!shallowEqual(this.props, nextProps)) {
+      this.update(nextProps);
+    }
   }
 
   onMouseMove = (data) => (event) => {
-    const { showTooltip } = this.props;
-    const { dates } = this.data;
-    const { x: xPoint } = localPoint(this.svg, event);
-    const x0 = this.xScale.invert(xPoint - this.getConfig().margin.left);
-    const xAxisBisector = bisector((d) => d).left;
-    const index = xAxisBisector(dates, x0, 1);
-    const d0 = dates[index - 1];
-    const d1 = dates[index];
-    const effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
-
-    showTooltip({
-      tooltipData: data.charts.map(({ series, hasTooltip }) => ({
-        date: (hasTooltip) ? this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : this.tooltipTimeFormat(dates[effectiveIndex]),
-        data: series.map(({ label, data: seriesData, tooltip = [] }) => ({
-          label: (tooltip.length) ? this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
-          data: seriesData[effectiveIndex],
-        })),
-      })),
-      tooltipLeft: this.xScale(dates[effectiveIndex]),
-    });
+    event.persist();
+    this.handleMouseMove(data, event);
   };
 
   onMouseLeave = () => () => this.props.hideTooltip();
+
+  onMouseDown = (event) => {
+    event.persist();
+    const { onBrushStart } = this.props;
+    onBrushStart(getCoordsFromEvent(this.svg, event));
+  };
+
+  onMouseUp = (event) => {
+    event.persist();
+    const { brush, onBrushEnd } = this.props;
+    if (brush.end) onBrushEnd(getCoordsFromEvent(this.svg, event));
+  };
 
   getSingleChartHeight = (props = this.props) => {
     const { parentHeight, data } = props;
@@ -106,8 +83,8 @@ export class LineChart extends React.PureComponent {
     this.pathRefs[ref.getAttribute('data-index')] = ref;
   };
 
-  getIndexMap = () => this.data.charts.map(({ title, series }) =>
-    series.map(({ label }) => `${title}-${label}`));
+  getIndexMap = () => this.data.charts.map(({ chartId, series }) =>
+    series.map(({ label }) => `${chartId}-${label}`));
 
   getPathYFromX = (index, x) => {
     const path = this.pathRefs[index];
@@ -116,6 +93,35 @@ export class LineChart extends React.PureComponent {
   };
 
   getColorFromPath = (index) => this.pathRefs[index] && this.pathRefs[index].getAttribute('stroke');
+
+  getAxisStyle = () => ({
+    hideTicks: true,
+    hideAxisLine: true,
+    stroke: '#eaf0f6',
+    /* tickLabelProps: () => ({
+      fill: this.getConfig().tickTextColor || this.getConfig().fontColor,
+      fontFamily: this.getConfig().tickTextFontFamily || this.getConfig().fontFamily,
+      fontSize: this.getConfig().axisLabelSize,
+    }), */
+  });
+
+  isDualAxis = (data = this.data) => data.axes.length === 2;
+
+  defaultConfig = {
+    margin: {
+      top: 100,
+      left: 60,
+      bottom: 30,
+      right: 50,
+    },
+    minHeight: 300,
+    colors: ['rgb(107, 157, 255)', 'rgb(252, 137, 159)'],
+    tooltipTimeFormat: '%b %d, %H:%M',
+    tooltipTimeFormatWithoutDate: '%H:%M',
+    fontFamily: 'Arial',
+    fontColor: 'black',
+    axisLabelSize: 10,
+  };
 
   pathRefs = {};
 
@@ -130,14 +136,17 @@ export class LineChart extends React.PureComponent {
       this.uniqueSeriesLabel = data.charts.reduce((a, c) => c.series.reduce((ai, s) => ai.includes(s.label) ? ai : ai.concat(s.label), a), []);
       this.data = {
         ...data,
-        dates: data.dates.map((d) => new Date(d)),
-        charts: data.charts.map(({ title, series, hasTooltip }) => {
+        dates: data.dates.map((d) => (d instanceof Date) ? d : new Date(d)),
+        charts: data.charts.map(({
+          title, series, hasTooltip, chartId = `${title}${new Date().getTime()}`,
+        }) => {
           if (this.isDualAxis(data)) {
             const [{ data: seriesLeft = [], label: labelLeft }, { data: seriesRight = [], label: labelRight }] = series;
             return {
               title,
               series,
               hasTooltip,
+              chartId,
               labelLeft,
               labelRight,
               yScaleLeft: getYScale(seriesLeft, this.yMax),
@@ -151,6 +160,7 @@ export class LineChart extends React.PureComponent {
             title,
             series,
             hasTooltip,
+            chartId,
             formattedSeries: series.map(({ data: seriesData, ...rest }) => ({ data: this.getFormattedSeriesData(seriesData, data.dates), ...rest })),
             yScale: getYScale(allData, this.yMax),
           };
@@ -169,75 +179,80 @@ export class LineChart extends React.PureComponent {
     this.tooltipTimeFormatWithoutDate = timeFormat(this.getConfig(props).tooltipTimeFormatWithoutDate);
   }
 
-  isDualAxis = (data = this.data) => data.axes.length === 2;
+  handleMouseMove = throttle((data, event) => {
+    const { showTooltip } = this.props;
+    const { dates } = this.data;
+    const { x: xPoint } = localPoint(this.svg, event);
+    const x0 = this.xScale.invert(xPoint - this.getConfig().margin.left);
+    const xAxisBisector = bisector((d) => d).left;
+    const index = xAxisBisector(dates, x0, 1);
+    const d0 = dates[index - 1];
+    const d1 = dates[index];
+    const effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
+    const { brush, onBrushDrag } = this.props;
 
-  defaultConfig = {
-    margin: {
-      top: 30,
-      left: 60,
-      bottom: 30,
-      right: 50,
-    },
-    minHeight: 300,
-    colors: ['rgb(107, 157, 255)', 'rgb(252, 137, 159)'],
-    tooltipTimeFormat: '%b %d, %H:%M',
-    tooltipTimeFormatWithoutDate: '%H:%M',
-  };
+    if (brush.start && brush.isBrushing) onBrushDrag(getCoordsFromEvent(this.svg, event));
 
-  lineDefinedFunc = (d) => {
-    if (d[1] !== null) {
-      return true;
-    }
-    return false;
-  };
+    showTooltip({
+      tooltipData: data.charts.map(({ series, hasTooltip }) => ({
+        date: (hasTooltip) ? this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : this.tooltipTimeFormat(dates[effectiveIndex]),
+        data: series.map(({ label, data: seriesData, tooltip = [] }) => ({
+          label: (tooltip.length) ? this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
+          data: seriesData[effectiveIndex],
+        })),
+      })),
+      tooltipLeft: this.xScale(dates[effectiveIndex]),
+    });
+  }, 100);
 
-  renderLines = ({ title, ...series }, gIndex) => {
+  lineDefinedFunc = (d) => d[1] !== null;
+
+  renderLines = ({ title, chartId, ...series }, gIndex) => {
     const height = this.getSingleChartHeight();
     return (
-      <Group key={title} top={(height * gIndex)}>
+      <Group key={chartId} top={(height * gIndex)}>
         <TextOutline
-          fontSize={12}
+          fontSize={`${14 / 16}rem`}
           x={this.getConfig().margin.left}
-          dy="2em"
+          dy="3rem"
           textAnchor="start"
-          fill="black"
+          fill={this.getConfig().fontColor}
           outlineStroke="white"
-          outlineStrokeWidth={3}
+          outlineStrokeWidth={1}
+          fontFamily={this.getConfig().fontFamily}
+
         >
           {title}
         </TextOutline>
-        {this.isDualAxis() ? this.renderDualAxis(series, gIndex, title) : this.renderSingleAxis(series, gIndex, title)}
+        {this.isDualAxis() ? this.renderDualAxis(series, gIndex, chartId) : this.renderSingleAxis(series, gIndex, chartId)}
       </Group>
     );
   };
 
-  renderSingleAxis = ({ formattedSeries, yScale }, gIndex, title) => [
+  renderSingleAxis = ({ formattedSeries, yScale }, gIndex, chartId) => [
     <GridRows
       top={this.getConfig().margin.top}
       left={this.getConfig().margin.left}
       scale={yScale}
-      numTicks={3}
+      numTicks={4}
       width={this.xMax}
     />,
-    <Group top={this.getConfig().margin.top} left={this.getConfig().margin.left}>
-      {formattedSeries.map(({ label, data: seriesData }) => this.renderLine(seriesData, yScale, `${title}-${label}`, label))}
+    <Group top={this.getConfig().margin.top} left={this.getConfig().margin.left} key={`${chartId}`}>
+      {formattedSeries.map(({ label, data: seriesData }) => this.renderLine(seriesData, yScale, `${chartId}-${label}`, label))}
     </Group>,
     <AxisLeft
       top={this.getConfig().margin.top}
       left={this.getConfig().margin.left}
       scale={yScale}
-      hideTicks
-      hideAxisLine
       numTicks={4}
       tickFormat={format('.0s')}
-      stroke="#eaf0f6"
-      tickLabelComponent={axisLeftTickLabel}
+      {...this.getAxisStyle()}
     />,
   ];
 
   renderDualAxis = ({
     yScaleLeft, yScaleRight, leftSeriesData, rightSeriesData, labelLeft, labelRight,
-  }, gIndex, title) => {
+  }, gIndex, chartId) => {
     const { parentWidth } = this.props;
     return [
       <GridRows
@@ -247,31 +262,25 @@ export class LineChart extends React.PureComponent {
         numTicks={4}
         width={this.xMax}
       />,
-      <Group left={this.getConfig().margin.left} top={this.getConfig().margin.top}>
-        {this.renderLine(leftSeriesData, yScaleLeft, `${title}-${labelLeft}`, labelLeft)}
-        {this.renderLine(rightSeriesData, yScaleRight, `${title}-${labelRight}`, labelRight)}
+      <Group left={this.getConfig().margin.left} top={this.getConfig().margin.top} key={`${chartId}`}>
+        {this.renderLine(leftSeriesData, yScaleLeft, `${chartId}-${labelLeft}`, labelLeft)}
+        {this.renderLine(rightSeriesData, yScaleRight, `${chartId}-${labelRight}`, labelRight)}
       </Group>,
       <AxisLeft
         top={this.getConfig().margin.top}
         left={this.getConfig().margin.left}
         scale={yScaleLeft}
-        hideTicks
-        hideAxisLine
         numTicks={4}
         tickFormat={format('.0s')}
-        stroke="#eaf0f6"
-        tickLabelComponent={axisLeftTickLabel}
+        {...this.getAxisStyle()}
       />,
       <AxisRight
         top={this.getConfig().margin.top}
         left={parentWidth - this.getConfig().margin.right}
         scale={yScaleRight}
-        hideTicks
-        hideAxisLine
         numTicks={4}
         tickFormat={format('.0s')}
-        stroke="#eaf0f6"
-        tickLabelComponent={axisLeftTickLabel}
+        {...this.getAxisStyle()}
       />,
     ];
   };
@@ -299,6 +308,7 @@ export class LineChart extends React.PureComponent {
       parentHeight,
       tooltipData,
       tooltipLeft,
+      brush,
     } = this.props;
 
     if (!this.data) {
@@ -336,9 +346,16 @@ export class LineChart extends React.PureComponent {
           }}
         >
           <div style={{ position: 'relative', height: height * this.data.charts.length }}>
-            <svg width={width} height={(height * this.data.charts.length) + this.getConfig().margin.bottom} ref={(s) => { this.svg = s; }}>
+            <svg
+              width={width}
+              height={(height * this.data.charts.length) + this.getConfig().margin.bottom}
+              ref={(s) => { this.svg = s; }}
+              onMouseDown={this.onMouseDown}
+              onMouseUp={this.onMouseUp}
+            >
               <rect x={0} y={0} width={width} height={height * this.data.charts.length} fill="white" />
               {this.data.charts.map(this.renderLines)}
+              <BoxBrush brush={{ ...brush, start: { ...brush.start, y: 0 }, end: { ...brush.end, y: parentHeight } }} />
               <Bar
                 data={this.data}
                 width={width}
@@ -408,9 +425,7 @@ export class LineChart extends React.PureComponent {
             top={0}
             left={this.getConfig().margin.left}
             scale={this.xScale}
-            hideTicks
-            stroke="#eaf0f6"
-            tickLabelComponent={axisBottomTickLabel}
+            {...this.getAxisStyle()}
           />
         </svg>
       </div>
@@ -428,6 +443,10 @@ LineChart.propTypes = {
   showTooltip: PropTypes.func,
   tooltipData: PropTypes.array,
   tooltipLeft: PropTypes.number,
+  onBrushStart: PropTypes.func,
+  onBrushEnd: PropTypes.func,
+  onBrushDrag: PropTypes.func,
+  brush: PropTypes.func,
 };
 
-export default withParentSize(withTooltip(LineChart));
+export default withParentSize(withTooltip(withBrush(LineChart)));

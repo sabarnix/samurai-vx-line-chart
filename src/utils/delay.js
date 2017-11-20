@@ -10,10 +10,10 @@ class Delay extends React.Component {
     this.refresh(this.props);
   }
 
-  componentWillReceiveProps() {
-    // if (!this.unmounting) {
-    //   this.refresh(next)
-    // }
+  componentWillReceiveProps(next) {
+    if (!this.unmounting) {
+      this.refresh(next);
+    }
   }
 
   componentWillUnmount() {
@@ -43,7 +43,7 @@ Delay.defaultProps = {
 };
 
 Delay.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.func,
   // eslint-disable-next-line react/no-unused-prop-types
   period: PropTypes.number,
   initial: PropTypes.number,

@@ -20,7 +20,7 @@ function Tooltips({
           }}
         >
           <ul className="tooltip-data">
-            <li className="tooltip-header">{date}</li>
+            <li key="header" className="tooltip-header">{date}</li>
             {tooltipData.map(({ label, data: pointData }) =>
               (
                 <li key={pointData + label}>
