@@ -7531,6 +7531,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__utils_scales__ = __webpack_require__(353);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__utils_findPathYatX__ = __webpack_require__(354);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__utils_delay__ = __webpack_require__(355);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__style_scss__ = __webpack_require__(356);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_26__style_scss__);
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -7573,7 +7575,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-__webpack_require__(356);
+
 
 var LineChart = function (_React$PureComponent) {
   _inherits(LineChart, _React$PureComponent);
@@ -8002,7 +8004,7 @@ var LineChart = function (_React$PureComponent) {
               },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('rect', { x: 0, y: 0, width: width, height: height * this.data.charts.length, fill: 'white' }),
               this.data.charts.map(this.renderLines),
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_18__vx_brush__["BoxBrush"], { brush: _extends({}, brush, { start: _extends({}, brush.start, { y: 0 }), end: _extends({}, brush.end, { y: parentHeight }) }) }),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_18__vx_brush__["BoxBrush"], { brush: _extends({}, brush, { start: _extends({}, brush.start, { y: 0 }), end: _extends({}, brush.end, { y: height * this.data.charts.length }) }) }),
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__vx_shape__["Bar"], {
                 data: this.data,
                 width: width,
@@ -8106,7 +8108,7 @@ LineChart.propTypes = {
   onBrushStart: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
   onBrushEnd: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
   onBrushDrag: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
-  brush: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func
+  brush: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(__WEBPACK_IMPORTED_MODULE_6__vx_responsive__["withParentSize"])(Object(__WEBPACK_IMPORTED_MODULE_12__vx_tooltip__["withTooltip"])(Object(__WEBPACK_IMPORTED_MODULE_18__vx_brush__["withBrush"])(LineChart))));

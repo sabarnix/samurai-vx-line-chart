@@ -24,7 +24,7 @@ import Tooltips from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
 import findPathYatX from './utils/findPathYatX';
 import Delay from './utils/delay';
-require('./style.scss');
+import './style.scss';
 
 export class LineChart extends React.PureComponent {
   componentWillMount() {
@@ -355,7 +355,7 @@ export class LineChart extends React.PureComponent {
             >
               <rect x={0} y={0} width={width} height={height * this.data.charts.length} fill="white" />
               {this.data.charts.map(this.renderLines)}
-              <BoxBrush brush={{ ...brush, start: { ...brush.start, y: 0 }, end: { ...brush.end, y: parentHeight } }} />
+              <BoxBrush brush={{ ...brush, start: { ...brush.start, y: 0 }, end: { ...brush.end, y: height * this.data.charts.length } }} />
               <Bar
                 data={this.data}
                 width={width}
@@ -446,7 +446,7 @@ LineChart.propTypes = {
   onBrushStart: PropTypes.func,
   onBrushEnd: PropTypes.func,
   onBrushDrag: PropTypes.func,
-  brush: PropTypes.func,
+  brush: PropTypes.object,
 };
 
 export default withParentSize(withTooltip(withBrush(LineChart)));
