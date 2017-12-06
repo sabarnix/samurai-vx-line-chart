@@ -24,6 +24,14 @@ module.exports = {
     ],
   },
   externals: {
-    react: 'commonjs react',
+    react: {
+      commonjs2: 'react',
+    },
+    'react-dom': {
+      commonjs2: 'react-dom',
+    },
+    webpack: {
+      commonjs2: 'webpack',
+    },
   },
 };

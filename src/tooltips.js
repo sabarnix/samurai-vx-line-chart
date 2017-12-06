@@ -19,7 +19,7 @@ function Tooltips({
             padding: '.5rem',
           }}
         >
-          <ul className="tooltip-data">
+          <ul className="tooltip-data" style={{ maxHeight: singleChartHeight - (top + 20) }}>
             <li key="header" className="tooltip-header">{date}</li>
             {tooltipData.map(({ label, data: pointData }) =>
               (
@@ -30,40 +30,6 @@ function Tooltips({
               ))}
           </ul>
         </Tooltip>))}
-      <style>
-        {`
-           .samurai-vx-tooltip .tooltip-data {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            maxHeight: ${singleChartHeight - (top + 20)}px,
-            overflow: 'hidden',
-           }
-           .samurai-vx-tooltip .tooltip-data li {
-            padding: 0;
-            margin: 0;
-            white-space: nowrap;
-            font-size: .75rem;
-            line-height: 20px;
-           }
-           .samurai-vx-tooltip .tooltip-data li.tooltip-header {
-            color: #b2b5bc;
-            font-size: .9rem;
-            line-height: 24px;
-           }
-           .samurai-vx-tooltip .tooltip-data li .data {
-            font-weight: bold;
-           }
-           .samurai-vx-tooltip .tooltip-data li .marker {
-              width: 10px;
-              height: 10px;
-              display: inline-block;
-              margin-right: .4rem;
-              border-radius: 50%;
-              border: 2px solid red;
-           }
-          `}
-      </style>
     </div>
   );
 }

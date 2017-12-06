@@ -16,9 +16,13 @@ import { bisector } from 'd3-array';
 import { format } from 'd3-format';
 import { Motion, spring } from 'react-motion';
 import { timeFormat } from 'd3-time-format';
-import { withBrush, getCoordsFromEvent, BoxBrush } from '@vx/brush';
+import { withBrush, BoxBrush } from '@vx/brush';
 import throttle from 'lodash.throttle';
 import shallowEqual from 'fbjs/lib/shallowEqual';
+import { compose } from 'recompose';
+import RangeSelectionTooltip from './rangeSelectionTooltip';
+import RangeSelectionBars from './rangeSelectionBars';
+import withRangeSelection from './enhancer/withRangeSelection';
 import HoverLine from './hoverline';
 import Tooltips from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
@@ -47,13 +51,21 @@ export class LineChart extends React.PureComponent {
   onMouseDown = (event) => {
     event.persist();
     const { onBrushStart } = this.props;
-    onBrushStart(getCoordsFromEvent(this.svg, event));
+    onBrushStart(this.localPoint(event));
   };
 
   onMouseUp = (event) => {
     event.persist();
-    const { brush, onBrushEnd } = this.props;
-    if (brush.end) onBrushEnd(getCoordsFromEvent(this.svg, event));
+    const { brush, onBrushReset, onRangeSelect } = this.props;
+    if (brush.end && brush.start) {
+      onBrushReset(event);
+      const start = brush.start.x;
+      const end = this.localPoint(event).x;
+
+      onRangeSelect({ x0: this.roundX(Math.min(start, end), 'floor'), x1: this.roundX(Math.max(start, end), 'ceil') });
+    } else if (brush.start) {
+      onBrushReset(event);
+    }
   };
 
   getSingleChartHeight = (props = this.props) => {
@@ -105,13 +117,40 @@ export class LineChart extends React.PureComponent {
     }), */
   });
 
+  localPoint = (event) => {
+    const { x, ...rest } = localPoint(this.svg, event);
+    return { x: Math.max((x - this.getConfig().margin.left), 0), ...rest };
+  };
+
+  roundX = (x, precision = 'round') => {
+    const { granularity = 1000 * 60 * 60 } = this.props;
+    const date = this.xScale.invert(x);
+    const timezoneOffset = date.getTimezoneOffset() * 1000 * 60;
+    return this.xScale(new Date((Math[precision]((date.getTime() + timezoneOffset) / granularity) * granularity) - timezoneOffset));
+  };
+
+  handleRangeSelectOk = (event) => {
+    event.stopPropagation();
+    const { onRangeSelectClose, range: { start, end }, onRangeChange } = this.props;
+    onRangeSelectClose();
+    if (onRangeChange) {
+      onRangeChange({ start: this.xScale.invert(start), end: this.xScale.invert(end) });
+    }
+  };
+
+  handleRangeSelectCancel = (event) => {
+    event.stopPropagation();
+    const { onRangeSelectClose } = this.props;
+    onRangeSelectClose();
+  };
+
   isDualAxis = (data = this.data) => data.axes.length === 2;
 
   defaultConfig = {
     margin: {
       top: 100,
       left: 60,
-      bottom: 30,
+      bottom: 10,
       right: 50,
     },
     minHeight: 300,
@@ -182,8 +221,8 @@ export class LineChart extends React.PureComponent {
   handleMouseMove = throttle((data, event) => {
     const { showTooltip } = this.props;
     const { dates } = this.data;
-    const { x: xPoint } = localPoint(this.svg, event);
-    const x0 = this.xScale.invert(xPoint - this.getConfig().margin.left);
+    const { x: xPoint } = this.localPoint(event);
+    const x0 = this.xScale.invert(xPoint);
     const xAxisBisector = bisector((d) => d).left;
     const index = xAxisBisector(dates, x0, 1);
     const d0 = dates[index - 1];
@@ -191,7 +230,7 @@ export class LineChart extends React.PureComponent {
     const effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
     const { brush, onBrushDrag } = this.props;
 
-    if (brush.start && brush.isBrushing) onBrushDrag(getCoordsFromEvent(this.svg, event));
+    if (brush.start && brush.isBrushing) onBrushDrag(this.localPoint(event));
 
     showTooltip({
       tooltipData: data.charts.map(({ series, hasTooltip }) => ({
@@ -203,7 +242,7 @@ export class LineChart extends React.PureComponent {
       })),
       tooltipLeft: this.xScale(dates[effectiveIndex]),
     });
-  }, 300);
+  }, 100);
 
   lineDefinedFunc = (d) => d[1] !== null;
 
@@ -309,6 +348,7 @@ export class LineChart extends React.PureComponent {
       tooltipData,
       tooltipLeft,
       brush,
+      range,
     } = this.props;
 
     if (!this.data) {
@@ -355,7 +395,17 @@ export class LineChart extends React.PureComponent {
             >
               <rect x={0} y={0} width={width} height={height * this.data.charts.length} fill="white" />
               {this.data.charts.map(this.renderLines)}
-              <BoxBrush brush={{ ...brush, start: { ...brush.start, y: 0 }, end: { ...brush.end, y: height * this.data.charts.length } }} />
+              <Group left={this.getConfig().margin.left}>
+                {brush.start && brush.end &&
+                  <BoxBrush
+                    brush={{ ...brush, start: { ...brush.start, y: 0 }, end: { ...brush.end, y: height * this.data.charts.length } }}
+                    fill="none"
+                    stroke="rgba(0, 0, 0, .7)"
+                    strokeDasharray="10 5"
+                  />
+                }
+                <RangeSelectionBars range={range} height={height * this.data.charts.length} xMax={this.xMax} />
+              </Group>
               <Bar
                 data={this.data}
                 width={width}
@@ -379,7 +429,7 @@ export class LineChart extends React.PureComponent {
                   </Motion>
                 )}
               </Delay>
-              {tooltipData && !brush.isBrushing &&
+              {tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode &&
               <Motion
                 defaultStyle={{ left: 0, opacity: 0 }}
                 style={{ left: spring(tooltipLeft || 0), opacity: spring(tooltipData ? 1 : 0) }}
@@ -403,7 +453,7 @@ export class LineChart extends React.PureComponent {
                 />)}
               </Motion>}
             </svg>
-            {tooltipData && !brush.isBrushing &&
+            {tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode &&
               <Motion
                 defaultStyle={{ left: 0, opacity: 0 }}
                 style={{ left: spring(tooltipLeft || 0), opacity: spring(tooltipData ? 1 : 0) }}
@@ -419,6 +469,28 @@ export class LineChart extends React.PureComponent {
                 />)}
               </Motion>}
           </div>
+          {brush.isBrushing && brush.start && brush.end &&
+            <RangeSelectionTooltip
+              start={this.roundX(brush.start.x, 'floor')}
+              end={this.roundX(brush.end.x, 'ceil')}
+              dateFormat={this.tooltipTimeFormat}
+              offset={this.getConfig().margin.left}
+              xScale={this.xScale}
+              top={100}
+            />}
+          {range.isInRangeSelectionMode && !brush.isBrushing &&
+            <RangeSelectionTooltip
+              start={range.start}
+              end={range.end}
+              dateFormat={this.tooltipTimeFormat}
+              offset={this.getConfig().margin.left}
+              xScale={this.xScale}
+              showActions
+              onSelect={this.handleRangeSelectOk}
+              onCancel={this.handleRangeSelectCancel}
+              top={100}
+            />
+          }
         </div>
         <svg width={width} height={30} style={{ background: '#fff' }}>
           <AxisBottom
@@ -444,9 +516,19 @@ LineChart.propTypes = {
   tooltipData: PropTypes.array,
   tooltipLeft: PropTypes.number,
   onBrushStart: PropTypes.func,
-  onBrushEnd: PropTypes.func,
+  onBrushReset: PropTypes.func,
   onBrushDrag: PropTypes.func,
+  onRangeSelect: PropTypes.func,
+  onRangeSelectClose: PropTypes.func,
+  onRangeChange: PropTypes.func,
+  granularity: PropTypes.number,
+  range: PropTypes.object,
   brush: PropTypes.object,
 };
 
-export default withParentSize(withTooltip(withBrush(LineChart)));
+export default compose(
+  withParentSize,
+  withTooltip,
+  withBrush,
+  withRangeSelection,
+)(LineChart);
