@@ -497,6 +497,7 @@ export class LineChart extends React.PureComponent {
             top={0}
             left={this.getConfig().margin.left}
             scale={this.xScale}
+            numTicks={Math.round(width / 80)}
             {...this.getAxisStyle()}
           />
         </svg>

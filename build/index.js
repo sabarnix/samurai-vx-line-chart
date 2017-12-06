@@ -8885,7 +8885,8 @@ var LineChart = function (_React$PureComponent) {
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__vx_axis__["AxisBottom"], _extends({
             top: 0,
             left: this.getConfig().margin.left,
-            scale: this.xScale
+            scale: this.xScale,
+            numTicks: Math.round(width / 80)
           }, this.getAxisStyle()))
         )
       );
