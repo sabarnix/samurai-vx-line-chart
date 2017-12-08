@@ -30,8 +30,5 @@ module.exports = {
     'react-dom': {
       commonjs2: 'react-dom',
     },
-    webpack: {
-      commonjs2: 'webpack',
-    },
   },
 };
