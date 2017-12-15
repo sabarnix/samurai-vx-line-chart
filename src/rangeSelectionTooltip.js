@@ -27,8 +27,8 @@ function RangeSelectionTooltip({
       {`${dateFormat(xScale.invert(start))} to ${dateFormat(xScale.invert(end))}`}
       {showActions &&
         <div className="actions">
-          <button className="btn btn-primary" onClick={onSelect}>Ok</button>
-          <button className="btn btn-secondary" onClick={onCancel}>Cancel</button>
+          <button className="button button-confirm" onClick={onSelect}>Ok</button>
+          <button className="button button-cancel" onClick={onCancel}>Cancel</button>
         </div>
       }
     </Tooltip>

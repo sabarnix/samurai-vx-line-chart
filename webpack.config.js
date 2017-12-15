@@ -30,5 +30,8 @@ module.exports = {
     'react-dom': {
       commonjs2: 'react-dom',
     },
+    'prop-types': {
+      commonjs2: 'prop-types',
+    },
   },
 };

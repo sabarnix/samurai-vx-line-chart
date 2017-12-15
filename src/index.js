@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import HorizontalListWrapper from 'list-wrapper';
 import { LinePath, Bar } from '@vx/shape';
 import { Group } from '@vx/group';
-import { curveCatmullRom } from '@vx/curve';
 import { withParentSize } from '@vx/responsive';
 import { AxisBottom, AxisLeft, AxisRight } from '@vx/axis';
 import { GridRows } from '@vx/grid';
@@ -21,6 +20,7 @@ import throttle from 'lodash.throttle';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import { compose } from 'recompose';
 import RangeSelectionTooltip from './rangeSelectionTooltip';
+import LegendShape from './LegendShape';
 import RangeSelectionBars from './rangeSelectionBars';
 import withRangeSelection from './enhancer/withRangeSelection';
 import HoverLine from './hoverline';
@@ -160,6 +160,7 @@ export class LineChart extends React.PureComponent {
     fontFamily: 'Arial',
     fontColor: 'black',
     axisLabelSize: 10,
+    legendShape: LegendShape,
   };
 
   pathRefs = {};
@@ -335,8 +336,6 @@ export class LineChart extends React.PureComponent {
       y={this.y}
       defined={this.lineDefinedFunc}
       stroke={this.legendScale(label)}
-      strokeLinecap="round"
-      curve={curveCatmullRom}
       innerRef={this.setPathRef}
     />
   );
@@ -373,10 +372,11 @@ export class LineChart extends React.PureComponent {
             scale={this.legendScale}
             direction="row"
             labelMargin="0 15px 0 0"
+            className="samurai-vx-legend"
             style={{
               display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px',
             }}
-
+            shape={this.getConfig().legendShape}
           />
         </HorizontalListWrapper>
         <div
