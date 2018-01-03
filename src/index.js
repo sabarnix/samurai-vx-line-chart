@@ -430,44 +430,34 @@ export class LineChart extends React.PureComponent {
                 )}
               </Delay>
               {tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode &&
-              <Motion
-                defaultStyle={{ left: 0, opacity: 0 }}
-                style={{ left: spring(tooltipLeft || 0), opacity: spring(tooltipData ? 1 : 0) }}
-              >
-                {(style) => (<HoverLine
-                  from={{
-                    x: style.left,
-                    y: 0,
-                  }}
-                  to={{
-                    x: style.left,
-                    y: (height * this.data.charts.length) + this.getConfig().margin.bottom,
-                  }}
-                  tooltipLeft={style.left}
-                  indexMap={this.getIndexMap()}
-                  getPathYFromX={this.getPathYFromX}
-                  getColorFromPath={this.getColorFromPath}
-                  margin={this.getConfig().margin}
-                  opacity={style.opacity}
-                  singleChartHeight={this.getSingleChartHeight()}
-                />)}
-              </Motion>}
+              <HoverLine
+                from={{
+                  x: tooltipLeft,
+                  y: 0,
+                }}
+                to={{
+                  x: tooltipLeft,
+                  y: (height * this.data.charts.length) + this.getConfig().margin.bottom,
+                }}
+                tooltipLeft={tooltipLeft}
+                indexMap={this.getIndexMap()}
+                getPathYFromX={this.getPathYFromX}
+                getColorFromPath={this.getColorFromPath}
+                margin={this.getConfig().margin}
+                opacity={tooltipData ? 1 : 0}
+                singleChartHeight={this.getSingleChartHeight()}
+              />}
             </svg>
             {tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode &&
-              <Motion
-                defaultStyle={{ left: 0, opacity: 0 }}
-                style={{ left: spring(tooltipLeft || 0), opacity: spring(tooltipData ? 1 : 0) }}
-              >
-                {(style) => (<Tooltips
-                  top={60}
-                  left={style.left + this.getConfig().margin.left}
-                  data={tooltipData}
-                  singleChartHeight={this.getSingleChartHeight()}
-                  xMax={this.xMax}
-                  opacity={style.opacity}
-                  colorScale={this.legendScale}
-                />)}
-              </Motion>}
+            <Tooltips
+              top={60}
+              left={tooltipLeft + this.getConfig().margin.left}
+              data={tooltipData}
+              singleChartHeight={this.getSingleChartHeight()}
+              xMax={this.xMax}
+              opacity={tooltipData ? 1 : 0}
+              colorScale={this.legendScale}
+            />}
           </div>
           {brush.isBrushing && brush.start && brush.end &&
             <RangeSelectionTooltip
