@@ -19,6 +19,9 @@
     "react-dom": "^15.x || ^16.x"
   },
   "dependencies": {
+    "prop-types": "^15.x || ^16.x",
+    "react": "^15.5.0 || ^16.x",
+    "react-dom": "^15.x || ^16.x",
     "@vx/axis": "^0.0.146",
     "@vx/brush": "^0.0.143",
     "@vx/curve": "^0.0.143",
@@ -37,6 +40,7 @@
     "d3-time-format": "^2.1.0",
     "list-wrapper": "git+ssh://git@tree.mn:shama.k/list-wrapper.git",
     "lodash.throttle": "^4.1.1",
+    "moize": "^4.0.4",
     "react-motion": "^0.5.2",
     "recompose": "^0.26.0"
   },

@@ -17,18 +17,25 @@ import { Motion, spring } from 'react-motion';
 import { timeFormat } from 'd3-time-format';
 import { withBrush, BoxBrush } from '@vx/brush';
 import throttle from 'lodash.throttle';
+import moize from 'moize';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import { compose } from 'recompose';
-import RangeSelectionTooltip from './rangeSelectionTooltip';
-import LegendShape from './LegendShape';
-import RangeSelectionBars from './rangeSelectionBars';
+import RangeSelectionTooltipComp from './rangeSelectionTooltip';
+import LegendShapeComp from './LegendShape';
+import RangeSelectionBarsComp from './rangeSelectionBars';
 import withRangeSelection from './enhancer/withRangeSelection';
-import HoverLine from './hoverline';
-import Tooltips from './tooltips';
+import HoverLineComp from './hoverline';
+import TooltipsComp from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
 import findPathYatX from './utils/findPathYatX';
 import Delay from './utils/delay';
 import './style.scss';
+
+const RangeSelectionTooltip = moize.reactSimple(RangeSelectionTooltipComp);
+const LegendShape = moize.reactSimple(LegendShapeComp);
+const RangeSelectionBars = moize.reactSimple(RangeSelectionBarsComp);
+const HoverLine = moize.reactSimple(HoverLineComp);
+const Tooltips = moize.reactSimple(TooltipsComp);
 
 export class LineChart extends React.PureComponent {
   componentWillMount() {
