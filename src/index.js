@@ -361,6 +361,10 @@ export class LineChart extends React.PureComponent {
       return null;
     }
 
+    if (range && range.end) {
+      range.end = Math.min(range.end, this.xMax);
+    }
+
     const width = parentWidth;
     const height = this.getSingleChartHeight();
 

@@ -8730,6 +8730,10 @@ var LineChart = function (_React$PureComponent) {
         return null;
       }
 
+      if (range && range.end) {
+        range.end = Math.min(range.end, this.xMax);
+      }
+
       var width = parentWidth;
       var height = this.getSingleChartHeight();
 
