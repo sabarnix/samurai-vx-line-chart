@@ -78,7 +78,7 @@ export class LineChart extends React.PureComponent {
   getSingleChartHeight = (props = this.props) => {
     const { parentHeight, data } = props;
     const { minHeight } = this.getConfig();
-    return ((parentHeight - 60) / data.charts.length) < minHeight ? minHeight : (parentHeight - (60 + this.getConfig().margin.bottom)) / data.charts.length;
+    return ((parentHeight - 80) / data.charts.length) < minHeight ? minHeight : (parentHeight - (80 + this.getConfig().margin.bottom)) / data.charts.length;
   };
 
   getConfig = (props = this.props) => Object.assign({}, this.defaultConfig, props.config);
@@ -385,7 +385,7 @@ export class LineChart extends React.PureComponent {
             labelMargin="0 15px 0 0"
             className="samurai-vx-legend"
             style={{
-              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px',
+              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0',
             }}
             shape={this.getConfig().legendShape}
           />
@@ -393,7 +393,7 @@ export class LineChart extends React.PureComponent {
         <div
           id="charts"
           style={{
-            height: parentHeight - 30 - 30, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
+            height: parentHeight - 30 - 50, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
           }}
         >
           <div style={{ position: 'relative', height: height * this.data.charts.length }}>
@@ -461,7 +461,7 @@ export class LineChart extends React.PureComponent {
             </svg>
             {tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode &&
             <Tooltips
-              top={60}
+              top={80}
               left={tooltipLeft + this.getConfig().margin.left}
               data={tooltipData}
               singleChartHeight={this.getSingleChartHeight()}

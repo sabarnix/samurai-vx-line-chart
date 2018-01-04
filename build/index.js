@@ -8365,7 +8365,7 @@ var LineChart = function (_React$PureComponent) {
       var _this$getConfig = _this.getConfig(),
           minHeight = _this$getConfig.minHeight;
 
-      return (parentHeight - 60) / data.charts.length < minHeight ? minHeight : (parentHeight - (60 + _this.getConfig().margin.bottom)) / data.charts.length;
+      return (parentHeight - 80) / data.charts.length < minHeight ? minHeight : (parentHeight - (80 + _this.getConfig().margin.bottom)) / data.charts.length;
     }, _this.getConfig = function () {
       var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.props;
       return Object.assign({}, _this.defaultConfig, props.config);
@@ -8757,7 +8757,7 @@ var LineChart = function (_React$PureComponent) {
             labelMargin: '0 15px 0 0',
             className: 'samurai-vx-legend',
             style: {
-              display: 'flex', maxWidth: parentWidth - 85 + 'px', whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px'
+              display: 'flex', maxWidth: parentWidth - 85 + 'px', whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0'
             },
             shape: this.getConfig().legendShape
           })
@@ -8767,7 +8767,7 @@ var LineChart = function (_React$PureComponent) {
           {
             id: 'charts',
             style: {
-              height: parentHeight - 30 - 30, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair'
+              height: parentHeight - 30 - 50, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair'
             }
           },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -8843,7 +8843,7 @@ var LineChart = function (_React$PureComponent) {
               })
             ),
             tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Tooltips, {
-              top: 60,
+              top: 80,
               left: tooltipLeft + this.getConfig().margin.left,
               data: tooltipData,
               singleChartHeight: this.getSingleChartHeight(),
