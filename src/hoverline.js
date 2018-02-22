@@ -22,6 +22,7 @@ function Hoverline({
             <Group>
               {charts.map((chartIndex) => [
                 <circle
+                  key={`${chartIndex}-outer`}
                   cx={tooltipLeft}
                   cy={getPathYFromX(chartIndex, tooltipLeft)}
                   r={12}
@@ -33,6 +34,7 @@ function Hoverline({
                   strokeWidth=".6"
                 />,
                 <circle
+                  key={`${chartIndex}-inner`}
                   cx={tooltipLeft}
                   cy={getPathYFromX(chartIndex, tooltipLeft)}
                   r={4}

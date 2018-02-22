@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Tooltip } from '@vx/tooltip';
 import { format } from 'd3-format';
@@ -10,10 +11,11 @@ function Tooltips({
 }) {
   return (
     <div style={{ opacity }} className="samurai-vx-tooltip">
-      {data.map(({ date, data: tooltipData }, gIndex) => (
+      {data.map(({ date, data: tooltipData, id }, gIndex) => (
         <Tooltip
           top={(singleChartHeight * gIndex) + top}
           left={left}
+          key={`${id}-${gIndex}`}
           style={{
             transform: (left < xMax / 2) ? 'translateX(10%)' : 'translateX(-110%)',
             padding: '.5rem',

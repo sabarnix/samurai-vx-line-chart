@@ -49,6 +49,8 @@ export class LineChart extends React.PureComponent {
   }
 
   onMouseMove = (data) => (event) => {
+    const { enableRangeSelection } = this.props;
+    if (!enableRangeSelection) return;
     event.persist();
     this.handleMouseMove(data, event);
   };
@@ -56,14 +58,18 @@ export class LineChart extends React.PureComponent {
   onMouseLeave = () => () => this.props.hideTooltip();
 
   onMouseDown = (event) => {
+    const { onBrushStart, enableRangeSelection } = this.props;
+    if (!enableRangeSelection) return;
     event.persist();
-    const { onBrushStart } = this.props;
     onBrushStart(this.localPoint(event));
   };
 
   onMouseUp = (event) => {
     event.persist();
-    const { brush, onBrushReset, onRangeSelect } = this.props;
+    const {
+      brush, onBrushReset, onRangeSelect, enableRangeSelection,
+    } = this.props;
+    if (!enableRangeSelection) return;
     if (brush.end && brush.start) {
       onBrushReset(event);
       const start = brush.start.x;
@@ -185,7 +191,7 @@ export class LineChart extends React.PureComponent {
         ...data,
         dates: data.dates.map((d) => (d instanceof Date) ? d : new Date(d)),
         charts: data.charts.map(({
-          title, series, hasTooltip, chartId = `${title}${new Date().getTime()}`,
+          title, series, hasTooltip, id: chartId,
         }) => {
           if (this.isDualAxis(data)) {
             const [{ data: seriesLeft = [], label: labelLeft }, { data: seriesRight = [], label: labelRight }] = series;
@@ -241,7 +247,8 @@ export class LineChart extends React.PureComponent {
     if (brush.start && brush.isBrushing) onBrushDrag(this.localPoint(event));
 
     showTooltip({
-      tooltipData: data.charts.map(({ series, hasTooltip }) => ({
+      tooltipData: data.charts.map(({ series, hasTooltip, id: chartId }) => ({
+        id: `${chartId}-tooltip`,
         date: (hasTooltip) ? this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : this.tooltipTimeFormat(dates[effectiveIndex]),
         data: series.map(({ label, data: seriesData, tooltip = [] }) => ({
           label: (tooltip.length) ? this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
@@ -257,7 +264,7 @@ export class LineChart extends React.PureComponent {
   renderLines = ({ title, chartId, ...series }, gIndex) => {
     const height = this.getSingleChartHeight();
     return (
-      <Group key={chartId} top={(height * gIndex)}>
+      <Group key={`${chartId}-${gIndex}`} top={(height * gIndex)}>
         <TextOutline
           fontSize={`${14 / 16}rem`}
           x={this.getConfig().margin.left}
@@ -284,7 +291,7 @@ export class LineChart extends React.PureComponent {
       numTicks={4}
       width={this.xMax}
     />,
-    <Group top={this.getConfig().margin.top} left={this.getConfig().margin.left} key={`${chartId}`}>
+    <Group top={this.getConfig().margin.top} left={this.getConfig().margin.left} key={`${chartId}-single-axis`}>
       {formattedSeries.map(({ label, data: seriesData }) => this.renderLine(seriesData, yScale, `${chartId}-${label}`, label))}
     </Group>,
     <AxisLeft
@@ -308,8 +315,9 @@ export class LineChart extends React.PureComponent {
         scale={yScaleLeft}
         numTicks={4}
         width={this.xMax}
+        key={`${chartId}-grid-row`}
       />,
-      <Group left={this.getConfig().margin.left} top={this.getConfig().margin.top} key={`${chartId}`}>
+      <Group left={this.getConfig().margin.left} top={this.getConfig().margin.top} key={`${chartId}-dual-axis`}>
         {this.renderLine(leftSeriesData, yScaleLeft, `${chartId}-${labelLeft}`, labelLeft)}
         {this.renderLine(rightSeriesData, yScaleRight, `${chartId}-${labelRight}`, labelRight)}
       </Group>,
@@ -320,6 +328,7 @@ export class LineChart extends React.PureComponent {
         numTicks={4}
         tickFormat={format('.0s')}
         {...this.getAxisStyle()}
+        key={`${chartId}-axis-left`}
       />,
       <AxisRight
         top={this.getConfig().margin.top}
@@ -327,6 +336,7 @@ export class LineChart extends React.PureComponent {
         scale={yScaleRight}
         numTicks={4}
         tickFormat={format('.0s')}
+        key={`${chartId}-axis-right`}
         {...this.getAxisStyle()}
       />,
     ];
@@ -507,8 +517,13 @@ export class LineChart extends React.PureComponent {
   }
 }
 
+LineChart.defaultProps = {
+  enableRangeSelection: false,
+};
+
 LineChart.propTypes = {
   data: PropTypes.object.isRequired,
+  enableRangeSelection: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
   config: PropTypes.object,
   parentWidth: PropTypes.number,
