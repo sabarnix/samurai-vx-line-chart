@@ -46,6 +46,10 @@ export class LineChart extends React.PureComponent {
     if (!shallowEqual(this.props, nextProps)) {
       this.update(nextProps);
     }
+
+    if (this.props.data !== nextProps.data) {
+      this.resetAllSelection();
+    }
   }
 
   onMouseMove = (data) => (event) => {
@@ -231,6 +235,11 @@ export class LineChart extends React.PureComponent {
     this.tooltipTimeFormat = timeFormat(this.getConfig(props).tooltipTimeFormat);
     this.tooltipTimeFormatWithoutDate = timeFormat(this.getConfig(props).tooltipTimeFormatWithoutDate);
   }
+
+  resetAllSelection = () => {
+    this.props.hideTooltip();
+    this.props.onRangeSelectClose();
+  };
 
   handleMouseMove = throttle((data, event) => {
     const { showTooltip } = this.props;

@@ -9215,6 +9215,9 @@ var LineChart = function (_React$PureComponent) {
       return new Date(d[0]);
     }, _this.y = function (d) {
       return d[1];
+    }, _this.resetAllSelection = function () {
+      _this.props.hideTooltip();
+      _this.props.onRangeSelectClose();
     }, _this.handleMouseMove = __WEBPACK_IMPORTED_MODULE_18_lodash_throttle___default()(function (data, event) {
       var showTooltip = _this.props.showTooltip;
       var dates = _this.data.dates;
@@ -9374,6 +9377,10 @@ var LineChart = function (_React$PureComponent) {
     value: function componentWillReceiveProps(nextProps) {
       if (!__WEBPACK_IMPORTED_MODULE_20_fbjs_lib_shallowEqual___default()(this.props, nextProps)) {
         this.update(nextProps);
+      }
+
+      if (this.props.data !== nextProps.data) {
+        this.resetAllSelection();
       }
     }
   }, {
