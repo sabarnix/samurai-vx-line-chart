@@ -123,16 +123,32 @@ export class LineChart extends React.PureComponent {
 
   getColorFromPath = (index) => this.pathRefs[index] && this.pathRefs[index].getAttribute('stroke');
 
-  getAxisStyle = () => ({
+  getAxisStyle = (position = 'left') => ({
     hideTicks: true,
     hideAxisLine: true,
     stroke: '#eaf0f6',
-    /* tickLabelProps: () => ({
+    tickLabelProps: (value) => ({
       fill: this.getConfig().tickTextColor || this.getConfig().fontColor,
       fontFamily: this.getConfig().tickTextFontFamily || this.getConfig().fontFamily,
-      fontSize: this.getConfig().axisLabelSize,
-    }), */
+      fontSize: (position === 'bottom' && this.shouldXAxisHighlight(value)) ? this.getConfig().axisLabelSize * 1.1 : this.getConfig().axisLabelSize,
+      // eslint-disable-next-line no-nested-ternary
+      fontWeight: (position === 'bottom') ? (this.shouldXAxisHighlight(value) ? 800 : 300) : undefined,
+      dx: '-0.25em',
+      dy: ['left', 'right'].includes(position) ? '0.25em' : '',
+      // eslint-disable-next-line no-nested-ternary
+      textAnchor: (position === 'left') ? 'end' : (position === 'right') ? 'start' : 'middle',
+    }),
   });
+
+  shouldXAxisHighlight = (date) => {
+    const dateDiff = (this.data.dates[this.data.dates.length - 1].getTime() - this.data.dates[0].getTime()) / (1000 * 60 * 60);
+    if (dateDiff > (15 * 24)) {
+      return date.getDay() === 2;
+    } else if (dateDiff > 24) {
+      return date.getHours() === 0;
+    }
+    return date.getMinutes() === 0;
+  }
 
   localPoint = (event) => {
     const { x, ...rest } = localPoint(this.svg, event);
@@ -309,7 +325,7 @@ export class LineChart extends React.PureComponent {
       scale={yScale}
       numTicks={4}
       tickFormat={format('.0s')}
-      {...this.getAxisStyle()}
+      {...this.getAxisStyle('left')}
     />,
   ];
 
@@ -336,7 +352,7 @@ export class LineChart extends React.PureComponent {
         scale={yScaleLeft}
         numTicks={4}
         tickFormat={format('.0s')}
-        {...this.getAxisStyle()}
+        {...this.getAxisStyle('left')}
         key={`${chartId}-axis-left`}
       />,
       <AxisRight
@@ -346,7 +362,7 @@ export class LineChart extends React.PureComponent {
         numTicks={4}
         tickFormat={format('.0s')}
         key={`${chartId}-axis-right`}
-        {...this.getAxisStyle()}
+        {...this.getAxisStyle('right')}
       />,
     ];
   };
@@ -518,7 +534,7 @@ export class LineChart extends React.PureComponent {
             left={this.getConfig().margin.left}
             scale={this.xScale}
             numTicks={Math.round(width / 80)}
-            {...this.getAxisStyle()}
+            {...this.getAxisStyle('bottom')}
           />
         </svg>
       </div>

@@ -9441,16 +9441,33 @@ var LineChart = function (_React$PureComponent) {
     }, _this.getColorFromPath = function (index) {
       return _this.pathRefs[index] && _this.pathRefs[index].getAttribute('stroke');
     }, _this.getAxisStyle = function () {
+      var position = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'left';
       return {
         hideTicks: true,
         hideAxisLine: true,
-        stroke: '#eaf0f6'
-        /* tickLabelProps: () => ({
-          fill: this.getConfig().tickTextColor || this.getConfig().fontColor,
-          fontFamily: this.getConfig().tickTextFontFamily || this.getConfig().fontFamily,
-          fontSize: this.getConfig().axisLabelSize,
-        }), */
+        stroke: '#eaf0f6',
+        tickLabelProps: function tickLabelProps(value) {
+          return {
+            fill: _this.getConfig().tickTextColor || _this.getConfig().fontColor,
+            fontFamily: _this.getConfig().tickTextFontFamily || _this.getConfig().fontFamily,
+            fontSize: position === 'bottom' && _this.shouldXAxisHighlight(value) ? _this.getConfig().axisLabelSize * 1.1 : _this.getConfig().axisLabelSize,
+            // eslint-disable-next-line no-nested-ternary
+            fontWeight: position === 'bottom' ? _this.shouldXAxisHighlight(value) ? 800 : 300 : undefined,
+            dx: '-0.25em',
+            dy: ['left', 'right'].includes(position) ? '0.25em' : '',
+            // eslint-disable-next-line no-nested-ternary
+            textAnchor: position === 'left' ? 'end' : position === 'right' ? 'start' : 'middle'
+          };
+        }
       };
+    }, _this.shouldXAxisHighlight = function (date) {
+      var dateDiff = (_this.data.dates[_this.data.dates.length - 1].getTime() - _this.data.dates[0].getTime()) / (1000 * 60 * 60);
+      if (dateDiff > 15 * 24) {
+        return date.getDay() === 2;
+      } else if (dateDiff > 24) {
+        return date.getHours() === 0;
+      }
+      return date.getMinutes() === 0;
     }, _this.localPoint = function (event) {
       var _localPoint = Object(__WEBPACK_IMPORTED_MODULE_12__vx_event__["localPoint"])(_this.svg, event),
           x = _localPoint.x,
@@ -9603,7 +9620,7 @@ var LineChart = function (_React$PureComponent) {
         scale: yScale,
         numTicks: 4,
         tickFormat: Object(__WEBPACK_IMPORTED_MODULE_14_d3_format__["a" /* format */])('.0s')
-      }, _this.getAxisStyle()))];
+      }, _this.getAxisStyle('left')))];
     }, _this.renderDualAxis = function (_ref9, gIndex, chartId) {
       var yScaleLeft = _ref9.yScaleLeft,
           yScaleRight = _ref9.yScaleRight,
@@ -9631,7 +9648,7 @@ var LineChart = function (_React$PureComponent) {
         scale: yScaleLeft,
         numTicks: 4,
         tickFormat: Object(__WEBPACK_IMPORTED_MODULE_14_d3_format__["a" /* format */])('.0s')
-      }, _this.getAxisStyle(), {
+      }, _this.getAxisStyle('left'), {
         key: chartId + '-axis-left'
       })), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__vx_axis__["AxisRight"], _extends({
         top: _this.getConfig().margin.top,
@@ -9640,7 +9657,7 @@ var LineChart = function (_React$PureComponent) {
         numTicks: 4,
         tickFormat: Object(__WEBPACK_IMPORTED_MODULE_14_d3_format__["a" /* format */])('.0s'),
         key: chartId + '-axis-right'
-      }, _this.getAxisStyle()))];
+      }, _this.getAxisStyle('right')))];
     }, _this.renderLine = function (seriesData, yScale, id, label) {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__vx_shape__["LinePath"], {
         key: id,
@@ -9936,7 +9953,7 @@ var LineChart = function (_React$PureComponent) {
             left: this.getConfig().margin.left,
             scale: this.xScale,
             numTicks: Math.round(width / 80)
-          }, this.getAxisStyle()))
+          }, this.getAxisStyle('bottom')))
         )
       );
     }
