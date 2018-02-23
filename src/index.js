@@ -6,7 +6,7 @@ import { Group } from '@vx/group';
 import { withParentSize } from '@vx/responsive';
 import { AxisBottom, AxisLeft, AxisRight } from '@vx/axis';
 import { GridRows } from '@vx/grid';
-import { TextOutline } from '@vx/text';
+import { Text } from '@vx/text';
 import { scaleOrdinal } from '@vx/scale';
 import { LegendOrdinal } from '@vx/legend';
 import { withTooltip } from '@vx/tooltip';
@@ -274,10 +274,10 @@ export class LineChart extends React.PureComponent {
     const height = this.getSingleChartHeight();
     return (
       <Group key={`${chartId}-${gIndex}`} top={(height * gIndex)}>
-        <TextOutline
+        <Text
           fontSize={`${14 / 16}rem`}
           x={this.getConfig().margin.left}
-          dy="3rem"
+          y="30"
           textAnchor="start"
           fill={this.getConfig().fontColor}
           outlineStroke="white"
@@ -286,7 +286,7 @@ export class LineChart extends React.PureComponent {
 
         >
           {title}
-        </TextOutline>
+        </Text>
         {this.isDualAxis() ? this.renderDualAxis(series, gIndex, chartId) : this.renderSingleAxis(series, gIndex, chartId)}
       </Group>
     );
