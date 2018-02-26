@@ -9365,9 +9365,6 @@ var LineChart = function (_React$PureComponent) {
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = LineChart.__proto__ || Object.getPrototypeOf(LineChart)).call.apply(_ref, [this].concat(args))), _this), _this.onMouseMove = function (data) {
       return function (event) {
-        var enableRangeSelection = _this.props.enableRangeSelection;
-
-        if (!enableRangeSelection) return;
         event.persist();
         _this.handleMouseMove(data, event);
       };
@@ -27688,7 +27685,6 @@ var getSerializerFunction = function getSerializerFunction(options) {
 /* 382 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
 /**
  * Copyright 2015, Yahoo! Inc.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.

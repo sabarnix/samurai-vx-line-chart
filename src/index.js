@@ -53,8 +53,6 @@ export class LineChart extends React.PureComponent {
   }
 
   onMouseMove = (data) => (event) => {
-    const { enableRangeSelection } = this.props;
-    if (!enableRangeSelection) return;
     event.persist();
     this.handleMouseMove(data, event);
   };
@@ -138,7 +136,7 @@ export class LineChart extends React.PureComponent {
       // eslint-disable-next-line no-nested-ternary
       textAnchor: (position === 'left') ? 'end' : (position === 'right') ? 'start' : 'middle',
     }),
-  });
+  });3
 
   shouldXAxisHighlight = (date) => {
     const dateDiff = (this.data.dates[this.data.dates.length - 1].getTime() - this.data.dates[0].getTime()) / (1000 * 60 * 60);
