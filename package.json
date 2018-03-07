@@ -1,6 +1,6 @@
 {
   "name": "samurai-vx-line-chart",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Multiple line charts with common fixed xAxis using VX",
   "main": "build/index.js",
   "keywords": [

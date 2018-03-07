@@ -76,6 +76,7 @@ export class LineChart extends React.PureComponent {
       onBrushReset(event);
       const start = brush.start.x;
       const end = this.localPoint(event).x;
+      if (start === end) return;
 
       onRangeSelect({ x0: this.roundX(Math.min(start, end), 'floor'), x1: this.roundX(Math.max(start, end), 'ceil') });
     } else if (brush.start) {

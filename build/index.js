@@ -9393,6 +9393,7 @@ var LineChart = function (_React$PureComponent) {
         onBrushReset(event);
         var start = brush.start.x;
         var end = _this.localPoint(event).x;
+        if (start === end) return;
 
         onRangeSelect({ x0: _this.roundX(Math.min(start, end), 'floor'), x1: _this.roundX(Math.max(start, end), 'ceil') });
       } else if (brush.start) {
