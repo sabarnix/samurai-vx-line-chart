@@ -9287,13 +9287,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__LegendShape__ = __webpack_require__(384);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__rangeSelectionBars__ = __webpack_require__(385);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__enhancer_withRangeSelection__ = __webpack_require__(386);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__hoverline__ = __webpack_require__(387);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__tooltips__ = __webpack_require__(388);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__utils_scales__ = __webpack_require__(389);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__utils_findPathYatX__ = __webpack_require__(390);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__utils_delay__ = __webpack_require__(391);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__style_scss__ = __webpack_require__(392);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_31__style_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__enhancer_withLegendToggle__ = __webpack_require__(397);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__hoverline__ = __webpack_require__(387);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__tooltips__ = __webpack_require__(388);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__utils_scales__ = __webpack_require__(389);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__utils_findPathYatX__ = __webpack_require__(390);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__utils_delay__ = __webpack_require__(391);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__style_scss__ = __webpack_require__(392);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_32__style_scss__);
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -9343,11 +9344,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 var RangeSelectionTooltip = __WEBPACK_IMPORTED_MODULE_19_moize__["a" /* default */].reactSimple(__WEBPACK_IMPORTED_MODULE_22__rangeSelectionTooltip__["a" /* default */]);
 var LegendShape = __WEBPACK_IMPORTED_MODULE_19_moize__["a" /* default */].reactSimple(__WEBPACK_IMPORTED_MODULE_23__LegendShape__["a" /* default */]);
 var RangeSelectionBars = __WEBPACK_IMPORTED_MODULE_19_moize__["a" /* default */].reactSimple(__WEBPACK_IMPORTED_MODULE_24__rangeSelectionBars__["a" /* default */]);
-var HoverLine = __WEBPACK_IMPORTED_MODULE_19_moize__["a" /* default */].reactSimple(__WEBPACK_IMPORTED_MODULE_26__hoverline__["a" /* default */]);
-var Tooltips = __WEBPACK_IMPORTED_MODULE_19_moize__["a" /* default */].reactSimple(__WEBPACK_IMPORTED_MODULE_27__tooltips__["a" /* default */]);
+var HoverLine = __WEBPACK_IMPORTED_MODULE_19_moize__["a" /* default */].reactSimple(__WEBPACK_IMPORTED_MODULE_27__hoverline__["a" /* default */]);
+var Tooltips = __WEBPACK_IMPORTED_MODULE_19_moize__["a" /* default */].reactSimple(__WEBPACK_IMPORTED_MODULE_28__tooltips__["a" /* default */]);
 
 var LineChart = function (_React$PureComponent) {
   _inherits(LineChart, _React$PureComponent);
@@ -9401,12 +9403,14 @@ var LineChart = function (_React$PureComponent) {
       }
     }, _this.getSingleChartHeight = function () {
       var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.props;
-      var parentHeight = props.parentHeight,
-          data = props.data;
+      var parentHeight = props.parentHeight;
+
+      var data = _this.data || props.data;
 
       var _this$getConfig = _this.getConfig(),
           minHeight = _this$getConfig.minHeight;
 
+      if (!data.charts.length) return 0;
       return (parentHeight - 80) / data.charts.length < minHeight ? minHeight : (parentHeight - (80 + _this.getConfig().margin.bottom)) / data.charts.length;
     }, _this.getConfig = function () {
       var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.props;
@@ -9435,7 +9439,7 @@ var LineChart = function (_React$PureComponent) {
     }, _this.getPathYFromX = function (index, x) {
       var path = _this.pathRefs[index];
 
-      return path && Object(__WEBPACK_IMPORTED_MODULE_29__utils_findPathYatX__["a" /* default */])(x, path, index);
+      return path && Object(__WEBPACK_IMPORTED_MODULE_30__utils_findPathYatX__["a" /* default */])(x, path, index);
     }, _this.getColorFromPath = function (index) {
       return _this.pathRefs[index] && _this.pathRefs[index].getAttribute('stroke');
     }, _this.getAxisStyle = function () {
@@ -9500,7 +9504,7 @@ var LineChart = function (_React$PureComponent) {
       onRangeSelectClose();
     }, _this.isDualAxis = function () {
       var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.data;
-      return data.axes.length === 2;
+      return data.axes.length === 2 && data.charts[0].series.length === 2;
     }, _this.defaultConfig = {
       margin: {
         top: 100,
@@ -9567,7 +9571,13 @@ var LineChart = function (_React$PureComponent) {
         }),
         tooltipLeft: _this.xScale(dates[effectiveIndex])
       });
-    }, 100), _this.lineDefinedFunc = function (d) {
+    }, 100), _this.handleLegendClick = function (data) {
+      return function () {
+        var onToggleLegend = _this.props.onToggleLegend;
+
+        onToggleLegend(data.datum);
+      };
+    }, _this.lineDefinedFunc = function (d) {
       return d[1] !== null;
     }, _this.renderLines = function (_ref6, gIndex) {
       var title = _ref6.title,
@@ -9589,7 +9599,6 @@ var LineChart = function (_React$PureComponent) {
             outlineStroke: 'white',
             outlineStrokeWidth: 1,
             fontFamily: _this.getConfig().fontFamily
-
           },
           title
         ),
@@ -9684,7 +9693,7 @@ var LineChart = function (_React$PureComponent) {
         this.update(nextProps);
       }
 
-      if (this.props.data !== nextProps.data) {
+      if (this.props.data !== nextProps.data || this.props.legendToggle !== nextProps.legendToggle) {
         this.resetAllSelection();
       }
     }
@@ -9708,27 +9717,54 @@ var LineChart = function (_React$PureComponent) {
       var _this2 = this;
 
       var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
-      var data = props.data;
+      var data = props.data,
+          _props$legendToggle = props.legendToggle,
+          legendToggle = _props$legendToggle === undefined ? [] : _props$legendToggle;
 
       if (data) {
-        this.xMax = this.getXMax(props);
-        this.yMax = this.getYMax(props);
         this.uniqueSeriesLabel = data.charts.reduce(function (a, c) {
           return c.series.reduce(function (ai, s) {
             return ai.includes(s.label) ? ai : ai.concat(s.label);
           }, a);
         }, []);
-        this.data = _extends({}, data, {
-          dates: data.dates.map(function (d) {
+        var visibleData = _extends({}, data);
+        if (legendToggle) {
+          visibleData = _extends({}, visibleData, {
+            axes: visibleData.axes.filter(function (axis) {
+              return !legendToggle.includes(axis);
+            }),
+            charts: visibleData.charts.reduce(function (chartsAcc, _ref10) {
+              var series = _ref10.series,
+                  id = _ref10.id,
+                  restCharts = _objectWithoutProperties(_ref10, ['series', 'id']);
+
+              var visibleSeries = series.reduce(function (seriesAcc, _ref11) {
+                var label = _ref11.label,
+                    restSeries = _objectWithoutProperties(_ref11, ['label']);
+
+                return legendToggle.includes(label) ? seriesAcc : [].concat(_toConsumableArray(seriesAcc), [_extends({ label: label }, restSeries)]);
+              }, []);
+              if (!visibleSeries.length) return chartsAcc;
+              return [].concat(_toConsumableArray(chartsAcc), [_extends({}, restCharts, {
+                id: id + '-' + legendToggle.length,
+                series: visibleSeries
+              })]);
+            }, [])
+          });
+        }
+        this.xMax = this.getXMax(_extends({}, props, { data: visibleData }));
+        this.yMax = this.getYMax(_extends({}, props, { data: visibleData }));
+        this.data = _extends({}, visibleData, {
+          dates: visibleData.dates.map(function (d) {
             return d instanceof Date ? d : new Date(d);
           }),
-          charts: data.charts.map(function (_ref10) {
-            var title = _ref10.title,
-                series = _ref10.series,
-                hasTooltip = _ref10.hasTooltip,
-                chartId = _ref10.id;
+          charts: visibleData.charts.map(function (_ref12) {
+            var title = _ref12.title,
+                series = _ref12.series,
+                hasTooltip = _ref12.hasTooltip,
+                chartId = _ref12.id;
 
-            if (_this2.isDualAxis(data)) {
+            if (_this2.isDualAxis(visibleData)) {
               var _series = _slicedToArray(series, 2),
                   _series$ = _series[0],
                   _series$$data = _series$.data,
@@ -9746,14 +9782,14 @@ var LineChart = function (_React$PureComponent) {
                 chartId: chartId,
                 labelLeft: labelLeft,
                 labelRight: labelRight,
-                yScaleLeft: Object(__WEBPACK_IMPORTED_MODULE_28__utils_scales__["b" /* getYScale */])(seriesLeft, _this2.yMax),
-                yScaleRight: Object(__WEBPACK_IMPORTED_MODULE_28__utils_scales__["b" /* getYScale */])(seriesRight, _this2.yMax),
-                leftSeriesData: _this2.getFormattedSeriesData(seriesLeft, data.dates),
-                rightSeriesData: _this2.getFormattedSeriesData(seriesRight, data.dates)
+                yScaleLeft: Object(__WEBPACK_IMPORTED_MODULE_29__utils_scales__["b" /* getYScale */])(seriesLeft, _this2.yMax),
+                yScaleRight: Object(__WEBPACK_IMPORTED_MODULE_29__utils_scales__["b" /* getYScale */])(seriesRight, _this2.yMax),
+                leftSeriesData: _this2.getFormattedSeriesData(seriesLeft, visibleData.dates),
+                rightSeriesData: _this2.getFormattedSeriesData(seriesRight, visibleData.dates)
               };
             }
-            var allData = series.reduce(function (acc, _ref11) {
-              var seriesData = _ref11.data;
+            var allData = series.reduce(function (acc, _ref13) {
+              var seriesData = _ref13.data;
               return [].concat(_toConsumableArray(acc), _toConsumableArray(seriesData));
             }, []);
             return {
@@ -9761,19 +9797,19 @@ var LineChart = function (_React$PureComponent) {
               series: series,
               hasTooltip: hasTooltip,
               chartId: chartId,
-              formattedSeries: series.map(function (_ref12) {
-                var seriesData = _ref12.data,
-                    rest = _objectWithoutProperties(_ref12, ['data']);
+              formattedSeries: series.map(function (_ref14) {
+                var seriesData = _ref14.data,
+                    rest = _objectWithoutProperties(_ref14, ['data']);
 
-                return _extends({ data: _this2.getFormattedSeriesData(seriesData, data.dates) }, rest);
+                return _extends({ data: _this2.getFormattedSeriesData(seriesData, visibleData.dates) }, rest);
               }),
-              yScale: Object(__WEBPACK_IMPORTED_MODULE_28__utils_scales__["b" /* getYScale */])(allData, _this2.yMax)
+              yScale: Object(__WEBPACK_IMPORTED_MODULE_29__utils_scales__["b" /* getYScale */])(allData, _this2.yMax)
             };
           })
         });
       }
 
-      this.xScale = Object(__WEBPACK_IMPORTED_MODULE_28__utils_scales__["a" /* getXScale */])(this.data.dates, this.xMax);
+      this.xScale = Object(__WEBPACK_IMPORTED_MODULE_29__utils_scales__["a" /* getXScale */])(this.data.dates, this.xMax);
 
       this.legendScale = Object(__WEBPACK_IMPORTED_MODULE_9__vx_scale__["scaleOrdinal"])({
         domain: this.uniqueSeriesLabel,
@@ -9794,7 +9830,8 @@ var LineChart = function (_React$PureComponent) {
           tooltipData = _props.tooltipData,
           tooltipLeft = _props.tooltipLeft,
           brush = _props.brush,
-          range = _props.range;
+          range = _props.range,
+          legendToggle = _props.legendToggle;
 
 
       if (!this.data) {
@@ -9827,8 +9864,14 @@ var LineChart = function (_React$PureComponent) {
             direction: 'row',
             labelMargin: '0 15px 0 0',
             className: 'samurai-vx-legend',
+            onClick: this.handleLegendClick,
             style: {
-              display: 'flex', maxWidth: parentWidth - 85 + 'px', whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0'
+              display: 'flex', maxWidth: parentWidth - 85 + 'px', whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0', cursor: 'pointer'
+            },
+            fill: function fill(_ref15) {
+              var datum = _ref15.datum,
+                  text = _ref15.text;
+              return legendToggle.includes(text) ? '#cecece' : _this3.legendScale(datum);
             },
             shape: this.getConfig().legendShape
           })
@@ -9877,7 +9920,7 @@ var LineChart = function (_React$PureComponent) {
                 onMouseMove: this.onMouseMove
               }),
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                __WEBPACK_IMPORTED_MODULE_30__utils_delay__["a" /* default */],
+                __WEBPACK_IMPORTED_MODULE_31__utils_delay__["a" /* default */],
                 { initial: 0, value: width, period: 300 },
                 function (delayed) {
                   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -9983,10 +10026,12 @@ LineChart.propTypes = {
   onRangeChange: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
   granularity: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
   range: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
-  brush: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object
+  brush: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
+  onToggleLegend: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
+  legendToggle: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.array
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(__WEBPACK_IMPORTED_MODULE_21_recompose__["a" /* compose */])(__WEBPACK_IMPORTED_MODULE_5__vx_responsive__["withParentSize"], __WEBPACK_IMPORTED_MODULE_11__vx_tooltip__["withTooltip"], __WEBPACK_IMPORTED_MODULE_17__vx_brush__["withBrush"], __WEBPACK_IMPORTED_MODULE_25__enhancer_withRangeSelection__["a" /* default */])(LineChart));
+/* harmony default export */ __webpack_exports__["default"] = (Object(__WEBPACK_IMPORTED_MODULE_21_recompose__["a" /* compose */])(__WEBPACK_IMPORTED_MODULE_5__vx_responsive__["withParentSize"], __WEBPACK_IMPORTED_MODULE_11__vx_tooltip__["withTooltip"], __WEBPACK_IMPORTED_MODULE_17__vx_brush__["withBrush"], __WEBPACK_IMPORTED_MODULE_26__enhancer_withLegendToggle__["a" /* default */], __WEBPACK_IMPORTED_MODULE_25__enhancer_withRangeSelection__["a" /* default */])(LineChart));
 
 /***/ }),
 /* 134 */
@@ -28962,6 +29007,29 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 397 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_recompose__ = __webpack_require__(132);
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = (Object(__WEBPACK_IMPORTED_MODULE_0_recompose__["a" /* compose */])(Object(__WEBPACK_IMPORTED_MODULE_0_recompose__["c" /* withState */])('legendToggle', 'updateLegendToggle', []), Object(__WEBPACK_IMPORTED_MODULE_0_recompose__["b" /* withHandlers */])({
+  onToggleLegend: function onToggleLegend(_ref) {
+    var updateLegendToggle = _ref.updateLegendToggle;
+    return function (legend) {
+      updateLegendToggle(function (disabledLegends) {
+        return disabledLegends.includes(legend) ? disabledLegends.filter(function (l) {
+          return l !== legend;
+        }) : [].concat(_toConsumableArray(disabledLegends), [legend]);
+      });
+    };
+  }
+})));
 
 /***/ })
 /******/ ]);

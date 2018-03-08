@@ -24,6 +24,7 @@ import RangeSelectionTooltipComp from './rangeSelectionTooltip';
 import LegendShapeComp from './LegendShape';
 import RangeSelectionBarsComp from './rangeSelectionBars';
 import withRangeSelection from './enhancer/withRangeSelection';
+import withLegendToggle from './enhancer/withLegendToggle';
 import HoverLineComp from './hoverline';
 import TooltipsComp from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
@@ -47,7 +48,7 @@ export class LineChart extends React.PureComponent {
       this.update(nextProps);
     }
 
-    if (this.props.data !== nextProps.data) {
+    if (this.props.data !== nextProps.data || this.props.legendToggle !== nextProps.legendToggle) {
       this.resetAllSelection();
     }
   }
@@ -85,8 +86,10 @@ export class LineChart extends React.PureComponent {
   };
 
   getSingleChartHeight = (props = this.props) => {
-    const { parentHeight, data } = props;
+    const { parentHeight } = props;
+    const data = this.data || props.data;
     const { minHeight } = this.getConfig();
+    if (!data.charts.length) return 0;
     return ((parentHeight - 80) / data.charts.length) < minHeight ? minHeight : (parentHeight - (80 + this.getConfig().margin.bottom)) / data.charts.length;
   };
 
@@ -137,7 +140,7 @@ export class LineChart extends React.PureComponent {
       // eslint-disable-next-line no-nested-ternary
       textAnchor: (position === 'left') ? 'end' : (position === 'right') ? 'start' : 'middle',
     }),
-  });3
+  });
 
   shouldXAxisHighlight = (date) => {
     const dateDiff = (this.data.dates[this.data.dates.length - 1].getTime() - this.data.dates[0].getTime()) / (1000 * 60 * 60);
@@ -176,7 +179,7 @@ export class LineChart extends React.PureComponent {
     onRangeSelectClose();
   };
 
-  isDualAxis = (data = this.data) => data.axes.length === 2;
+  isDualAxis = (data = this.data) => data.axes.length === 2 && data.charts[0].series.length === 2;
 
   defaultConfig = {
     margin: {
@@ -201,18 +204,34 @@ export class LineChart extends React.PureComponent {
   y = (d) => d[1];
 
   update(props = this.props) {
-    const { data } = props;
+    const { data, legendToggle = [] } = props;
     if (data) {
-      this.xMax = this.getXMax(props);
-      this.yMax = this.getYMax(props);
       this.uniqueSeriesLabel = data.charts.reduce((a, c) => c.series.reduce((ai, s) => ai.includes(s.label) ? ai : ai.concat(s.label), a), []);
+      let visibleData = { ...data };
+      if (legendToggle) {
+        visibleData = {
+          ...visibleData,
+          axes: visibleData.axes.filter((axis) => !legendToggle.includes(axis)),
+          charts: visibleData.charts.reduce((chartsAcc, { series, id, ...restCharts }) => {
+            const visibleSeries = series.reduce((seriesAcc, { label, ...restSeries }) => legendToggle.includes(label) ? seriesAcc : [...seriesAcc, { label, ...restSeries }], []);
+            if (!visibleSeries.length) return chartsAcc;
+            return ([...chartsAcc, {
+              ...restCharts,
+              id: `${id}-${legendToggle.length}`,
+              series: visibleSeries,
+            }]);
+          }, []),
+        };
+      }
+      this.xMax = this.getXMax({ ...props, data: visibleData });
+      this.yMax = this.getYMax({ ...props, data: visibleData });
       this.data = {
-        ...data,
-        dates: data.dates.map((d) => (d instanceof Date) ? d : new Date(d)),
-        charts: data.charts.map(({
+        ...visibleData,
+        dates: visibleData.dates.map((d) => (d instanceof Date) ? d : new Date(d)),
+        charts: visibleData.charts.map(({
           title, series, hasTooltip, id: chartId,
         }) => {
-          if (this.isDualAxis(data)) {
+          if (this.isDualAxis(visibleData)) {
             const [{ data: seriesLeft = [], label: labelLeft }, { data: seriesRight = [], label: labelRight }] = series;
             return {
               title,
@@ -223,8 +242,8 @@ export class LineChart extends React.PureComponent {
               labelRight,
               yScaleLeft: getYScale(seriesLeft, this.yMax),
               yScaleRight: getYScale(seriesRight, this.yMax),
-              leftSeriesData: this.getFormattedSeriesData(seriesLeft, data.dates),
-              rightSeriesData: this.getFormattedSeriesData(seriesRight, data.dates),
+              leftSeriesData: this.getFormattedSeriesData(seriesLeft, visibleData.dates),
+              rightSeriesData: this.getFormattedSeriesData(seriesRight, visibleData.dates),
             };
           }
           const allData = series.reduce((acc, { data: seriesData }) => ([...acc, ...seriesData]), []);
@@ -233,7 +252,7 @@ export class LineChart extends React.PureComponent {
             series,
             hasTooltip,
             chartId,
-            formattedSeries: series.map(({ data: seriesData, ...rest }) => ({ data: this.getFormattedSeriesData(seriesData, data.dates), ...rest })),
+            formattedSeries: series.map(({ data: seriesData, ...rest }) => ({ data: this.getFormattedSeriesData(seriesData, visibleData.dates), ...rest })),
             yScale: getYScale(allData, this.yMax),
           };
         }),
@@ -283,6 +302,11 @@ export class LineChart extends React.PureComponent {
     });
   }, 100);
 
+  handleLegendClick = (data) => () => {
+    const { onToggleLegend } = this.props;
+    onToggleLegend(data.datum);
+  };
+
   lineDefinedFunc = (d) => d[1] !== null;
 
   renderLines = ({ title, chartId, ...series }, gIndex) => {
@@ -298,7 +322,6 @@ export class LineChart extends React.PureComponent {
           outlineStroke="white"
           outlineStrokeWidth={1}
           fontFamily={this.getConfig().fontFamily}
-
         >
           {title}
         </Text>
@@ -389,6 +412,7 @@ export class LineChart extends React.PureComponent {
       tooltipLeft,
       brush,
       range,
+      legendToggle,
     } = this.props;
 
     if (!this.data) {
@@ -418,9 +442,11 @@ export class LineChart extends React.PureComponent {
             direction="row"
             labelMargin="0 15px 0 0"
             className="samurai-vx-legend"
+            onClick={this.handleLegendClick}
             style={{
-              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0',
+              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0', cursor: 'pointer'
             }}
+            fill={({ datum, text }) => legendToggle.includes(text) ? '#cecece' : this.legendScale(datum)}
             shape={this.getConfig().legendShape}
           />
         </HorizontalListWrapper>
@@ -565,11 +591,14 @@ LineChart.propTypes = {
   granularity: PropTypes.number,
   range: PropTypes.object,
   brush: PropTypes.object,
+  onToggleLegend: PropTypes.func,
+  legendToggle: PropTypes.array,
 };
 
 export default compose(
   withParentSize,
   withTooltip,
   withBrush,
+  withLegendToggle,
   withRangeSelection,
 )(LineChart);
