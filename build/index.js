@@ -9564,7 +9564,8 @@ var LineChart = function (_React$PureComponent) {
                   tooltip = _ref5$tooltip === undefined ? [] : _ref5$tooltip;
               return {
                 label: tooltip.length ? _this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
-                data: seriesData[effectiveIndex]
+                data: seriesData[effectiveIndex],
+                series: label
               };
             })
           };
@@ -9947,6 +9948,7 @@ var LineChart = function (_React$PureComponent) {
                   x: tooltipLeft,
                   y: height * this.data.charts.length + this.getConfig().margin.bottom
                 },
+                tooltipData: tooltipData,
                 tooltipLeft: tooltipLeft,
                 indexMap: this.getIndexMap(),
                 getPathYFromX: this.getPathYFromX,
@@ -28062,7 +28064,8 @@ function Hoverline(_ref) {
       margin = _ref.margin,
       singleChartHeight = _ref.singleChartHeight,
       opacity = _ref.opacity,
-      getColorFromPath = _ref.getColorFromPath;
+      getColorFromPath = _ref.getColorFromPath,
+      tooltipData = _ref.tooltipData;
 
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
     __WEBPACK_IMPORTED_MODULE_2__vx_group__["Group"],
@@ -28082,8 +28085,8 @@ function Hoverline(_ref) {
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_2__vx_group__["Group"],
           null,
-          charts.map(function (chartIndex) {
-            return [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('circle', {
+          charts.map(function (chartIndex, seriesIndex) {
+            return [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('circle', {
               key: chartIndex + '-outer',
               cx: tooltipLeft,
               cy: getPathYFromX(chartIndex, tooltipLeft),
@@ -28181,13 +28184,17 @@ function Tooltips(_ref) {
             { key: 'header', className: 'tooltip-header' },
             date
           ),
-          tooltipData.map(function (_ref3) {
-            var label = _ref3.label,
-                pointData = _ref3.data;
+          tooltipData.filter(function (_ref3) {
+            var pointData = _ref3.data;
+            return ![null, undefined].includes(pointData);
+          }).map(function (_ref4) {
+            var label = _ref4.label,
+                pointData = _ref4.data,
+                series = _ref4.series;
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'li',
               { key: pointData + label },
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('span', { className: 'marker', style: { borderColor: colorScale(label) } }),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('span', { className: 'marker', style: { borderColor: colorScale(series) } }),
               label,
               ': ',
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(

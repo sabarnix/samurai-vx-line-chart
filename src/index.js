@@ -296,6 +296,7 @@ export class LineChart extends React.PureComponent {
         data: series.map(({ label, data: seriesData, tooltip = [] }) => ({
           label: (tooltip.length) ? this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
           data: seriesData[effectiveIndex],
+          series: label,
         })),
       })),
       tooltipLeft: this.xScale(dates[effectiveIndex]),
@@ -510,6 +511,7 @@ export class LineChart extends React.PureComponent {
                   x: tooltipLeft,
                   y: (height * this.data.charts.length) + this.getConfig().margin.bottom,
                 }}
+                tooltipData={tooltipData}
                 tooltipLeft={tooltipLeft}
                 indexMap={this.getIndexMap()}
                 getPathYFromX={this.getPathYFromX}

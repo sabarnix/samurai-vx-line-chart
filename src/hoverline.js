@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 function Hoverline({
   from, to, tooltipLeft, indexMap, getPathYFromX, margin, singleChartHeight, opacity, getColorFromPath,
+  tooltipData,
 }) {
   return (
     <Group style={{ opacity }} left={margin.left}>
@@ -20,7 +21,7 @@ function Hoverline({
         indexMap.map((charts, gIndex) => (
           <Group top={(singleChartHeight * gIndex) + margin.top}>
             <Group>
-              {charts.map((chartIndex) => [
+              { charts.map((chartIndex, seriesIndex) => [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [
                 <circle
                   key={`${chartIndex}-outer`}
                   cx={tooltipLeft}
@@ -62,6 +63,7 @@ Hoverline.propTypes = {
   margin: PropTypes.object,
   singleChartHeight: PropTypes.number,
   opacity: PropTypes.number,
+  tooltipData: PropTypes.array.isRequired,
 };
 
 export default Hoverline;
