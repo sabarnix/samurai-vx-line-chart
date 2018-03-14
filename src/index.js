@@ -93,7 +93,15 @@ export class LineChart extends React.PureComponent {
     return ((parentHeight - 80) / data.charts.length) < minHeight ? minHeight : (parentHeight - (80 + this.getConfig().margin.bottom)) / data.charts.length;
   };
 
-  getConfig = (props = this.props) => Object.assign({}, this.defaultConfig, props.config);
+  getConfig = (props = this.props) => {
+    const config = { ...this.defaultConfig, ...props.config };
+    if (this.isDualAxis()) {
+      const { margin } = config;
+      return { ...config, margin: { ...margin, left: margin.left + 20, right: margin.right + 20 } };
+    }
+
+    return config;
+  }
 
   getXMax(props = this.props) {
     return props.parentWidth - this.getConfig(props).margin.left - this.getConfig(props).margin.right;
@@ -179,7 +187,7 @@ export class LineChart extends React.PureComponent {
     onRangeSelectClose();
   };
 
-  isDualAxis = (data = this.data) => data.axes.length === 2 && data.charts[0].series.length === 2;
+  isDualAxis = (data = this.data) => data && data.axes && data.axes.length === 2 && data.charts[0].series.length === 2;
 
   defaultConfig = {
     margin: {
@@ -356,6 +364,7 @@ export class LineChart extends React.PureComponent {
     yScaleLeft, yScaleRight, leftSeriesData, rightSeriesData, labelLeft, labelRight,
   }, gIndex, chartId) => {
     const { parentWidth } = this.props;
+
     return [
       <GridRows
         top={this.getConfig().margin.top}
@@ -376,6 +385,10 @@ export class LineChart extends React.PureComponent {
         numTicks={4}
         tickFormat={format('.0s')}
         {...this.getAxisStyle('left')}
+        label={labelLeft}
+        labelProps={{
+          fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().fontColor, textAnchor: 'middle',
+        }}
         key={`${chartId}-axis-left`}
       />,
       <AxisRight
@@ -385,6 +398,11 @@ export class LineChart extends React.PureComponent {
         numTicks={4}
         tickFormat={format('.0s')}
         key={`${chartId}-axis-right`}
+        label={labelRight}
+        labelProps={{
+          fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().fontColor, textAnchor: 'middle',
+        }}
+        labelOffset={30}
         {...this.getAxisStyle('right')}
       />,
     ];
@@ -445,7 +463,7 @@ export class LineChart extends React.PureComponent {
             className="samurai-vx-legend"
             onClick={this.handleLegendClick}
             style={{
-              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0', cursor: 'pointer'
+              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0', cursor: 'pointer',
             }}
             fill={({ datum, text }) => legendToggle.includes(text) ? '#cecece' : this.legendScale(datum)}
             shape={this.getConfig().legendShape}
