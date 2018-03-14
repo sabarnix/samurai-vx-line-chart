@@ -9512,7 +9512,7 @@ var LineChart = function (_React$PureComponent) {
       onRangeSelectClose();
     }, _this.isDualAxis = function () {
       var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.data;
-      return data && data.axes && data.axes.length === 2 && data.charts[0].series.length === 2;
+      return data && data.isDualAxes;
     }, _this.defaultConfig = {
       margin: {
         top: 100,
@@ -9682,7 +9682,7 @@ var LineChart = function (_React$PureComponent) {
         labelProps: {
           fontFamily: _this.getConfig().fontFamily, fontSize: '12', fill: _this.getConfig().fontColor, textAnchor: 'middle'
         },
-        labelOffset: 30
+        labelOffset: 20
       }, _this.getAxisStyle('right')))];
     }, _this.renderLine = function (seriesData, yScale, id, label) {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__vx_shape__["LinePath"], {

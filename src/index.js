@@ -187,7 +187,7 @@ export class LineChart extends React.PureComponent {
     onRangeSelectClose();
   };
 
-  isDualAxis = (data = this.data) => data && data.axes && data.axes.length === 2 && data.charts[0].series.length === 2;
+  isDualAxis = (data = this.data) => data && data.isDualAxes;
 
   defaultConfig = {
     margin: {
@@ -402,7 +402,7 @@ export class LineChart extends React.PureComponent {
         labelProps={{
           fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().fontColor, textAnchor: 'middle',
         }}
-        labelOffset={30}
+        labelOffset={20}
         {...this.getAxisStyle('right')}
       />,
     ];
