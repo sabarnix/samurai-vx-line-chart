@@ -5,7 +5,7 @@ function LegendShape({ fill, width, height }) {
   return (<div
     className="samurai-vx-legend-shape"
     style={{
-      width, height, border: `3px solid ${fill}`, borderRadius: '50%',
+      width, height, backgroundColor: fill, borderRadius: '50%',
     }}
   />);
 }

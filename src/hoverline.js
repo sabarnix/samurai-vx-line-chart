@@ -5,14 +5,14 @@ import PropTypes from 'prop-types';
 
 function Hoverline({
   from, to, tooltipLeft, indexMap, getPathYFromX, margin, singleChartHeight, opacity, getColorFromPath,
-  tooltipData,
+  tooltipData, hoverlineColor,
 }) {
   return (
     <Group style={{ opacity }} left={margin.left}>
       <Line
         from={from}
         to={to}
-        stroke="black"
+        stroke={hoverlineColor}
         strokeWidth={1}
         style={{ pointerEvents: 'none' }}
         strokeDasharray="2,2"
@@ -64,6 +64,7 @@ Hoverline.propTypes = {
   singleChartHeight: PropTypes.number,
   opacity: PropTypes.number,
   tooltipData: PropTypes.array.isRequired,
+  hoverlineColor: PropTypes.string,
 };
 
 export default Hoverline;

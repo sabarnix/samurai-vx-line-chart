@@ -9527,7 +9527,8 @@ var LineChart = function (_React$PureComponent) {
       fontFamily: 'Arial',
       fontColor: 'black',
       axisLabelSize: 10,
-      legendShape: LegendShape
+      legendShape: LegendShape,
+      hoverlineColor: 'black'
     }, _this.pathRefs = {}, _this.x = function (d) {
       return new Date(d[0]);
     }, _this.y = function (d) {
@@ -9602,12 +9603,13 @@ var LineChart = function (_React$PureComponent) {
           {
             fontSize: 14 / 16 + 'rem',
             x: _this.getConfig().margin.left,
-            y: '30',
+            y: 30,
             textAnchor: 'start',
             fill: _this.getConfig().fontColor,
             outlineStroke: 'white',
             outlineStrokeWidth: 1,
-            fontFamily: _this.getConfig().fontFamily
+            fontFamily: _this.getConfig().fontFamily,
+            fontWeight: 'bold'
           },
           title
         ),
@@ -9892,7 +9894,9 @@ var LineChart = function (_React$PureComponent) {
                   text = _ref15.text;
               return legendToggle.includes(text) ? '#cecece' : _this3.legendScale(datum);
             },
-            shape: this.getConfig().legendShape
+            shape: this.getConfig().legendShape,
+            shapeWidth: 10,
+            shapeHeight: 10
           })
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -9973,7 +9977,8 @@ var LineChart = function (_React$PureComponent) {
                 getColorFromPath: this.getColorFromPath,
                 margin: this.getConfig().margin,
                 opacity: tooltipData ? 1 : 0,
-                singleChartHeight: this.getSingleChartHeight()
+                singleChartHeight: this.getSingleChartHeight(),
+                hoverlineColor: this.getConfig().hoverlineColor
               })
             ),
             tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Tooltips, {
@@ -27916,7 +27921,7 @@ function LegendShape(_ref) {
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('div', {
     className: 'samurai-vx-legend-shape',
     style: {
-      width: width, height: height, border: '3px solid ' + fill, borderRadius: '50%'
+      width: width, height: height, backgroundColor: fill, borderRadius: '50%'
     }
   });
 }
@@ -28106,7 +28111,8 @@ function Hoverline(_ref) {
       singleChartHeight = _ref.singleChartHeight,
       opacity = _ref.opacity,
       getColorFromPath = _ref.getColorFromPath,
-      tooltipData = _ref.tooltipData;
+      tooltipData = _ref.tooltipData,
+      hoverlineColor = _ref.hoverlineColor;
 
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
     __WEBPACK_IMPORTED_MODULE_2__vx_group__["Group"],
@@ -28114,7 +28120,7 @@ function Hoverline(_ref) {
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__vx_shape__["Line"], {
       from: from,
       to: to,
-      stroke: 'black',
+      stroke: hoverlineColor,
       strokeWidth: 1,
       style: { pointerEvents: 'none' },
       strokeDasharray: '2,2'
@@ -28166,7 +28172,8 @@ Hoverline.propTypes = {
   margin: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.object,
   singleChartHeight: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.number,
   opacity: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.number,
-  tooltipData: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.array.isRequired
+  tooltipData: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.array.isRequired,
+  hoverlineColor: __WEBPACK_IMPORTED_MODULE_3_prop_types___default.a.string
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (Hoverline);

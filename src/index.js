@@ -204,6 +204,7 @@ export class LineChart extends React.PureComponent {
     fontColor: 'black',
     axisLabelSize: 10,
     legendShape: LegendShape,
+    hoverlineColor: 'black',
   };
 
   pathRefs = {};
@@ -325,12 +326,13 @@ export class LineChart extends React.PureComponent {
         <Text
           fontSize={`${14 / 16}rem`}
           x={this.getConfig().margin.left}
-          y="30"
+          y={30}
           textAnchor="start"
           fill={this.getConfig().fontColor}
           outlineStroke="white"
           outlineStrokeWidth={1}
           fontFamily={this.getConfig().fontFamily}
+          fontWeight="bold"
         >
           {title}
         </Text>
@@ -467,6 +469,8 @@ export class LineChart extends React.PureComponent {
             }}
             fill={({ datum, text }) => legendToggle.includes(text) ? '#cecece' : this.legendScale(datum)}
             shape={this.getConfig().legendShape}
+            shapeWidth={10}
+            shapeHeight={10}
           />
         </HorizontalListWrapper>
         <div
@@ -537,6 +541,7 @@ export class LineChart extends React.PureComponent {
                 margin={this.getConfig().margin}
                 opacity={tooltipData ? 1 : 0}
                 singleChartHeight={this.getSingleChartHeight()}
+                hoverlineColor={this.getConfig().hoverlineColor}
               />}
             </svg>
             {tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode &&
