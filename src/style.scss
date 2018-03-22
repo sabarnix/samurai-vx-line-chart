@@ -8,6 +8,11 @@
   padding: 0;
   overflow: hidden;
 }
+.samurai-vx-legend + .arrow-parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .samurai-vx-tooltip .tooltip-data li {
   padding: 0;

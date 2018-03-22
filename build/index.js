@@ -9601,7 +9601,7 @@ var LineChart = function (_React$PureComponent) {
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_8__vx_text__["Text"],
           {
-            fontSize: 14 / 16 + 'rem',
+            fontSize: 14,
             x: _this.getConfig().margin.left,
             y: 30,
             textAnchor: 'start',
@@ -28500,7 +28500,7 @@ exports = module.exports = __webpack_require__(395)(false);
 
 
 // module
-exports.push([module.i, ".list-wrapper-prop {\n  justify-content: flex-end; }\n\n.samurai-vx-tooltip .tooltip-data {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n  overflow: hidden; }\n\n.samurai-vx-tooltip .tooltip-data li {\n  padding: 0;\n  margin: 0;\n  white-space: nowrap;\n  font-size: .75rem;\n  line-height: 20px; }\n\n.samurai-vx-tooltip .tooltip-data li.tooltip-header {\n  color: #b2b5bc;\n  font-size: .9rem;\n  line-height: 24px; }\n\n.samurai-vx-tooltip .tooltip-data li .data {\n  font-weight: bold; }\n\n.samurai-vx-tooltip .tooltip-data li .marker {\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  margin-right: .4rem;\n  border-radius: 50%;\n  border: 2px solid red; }\n\n.samurai-vx-tooltip-range-selection .actions {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center; }\n  .samurai-vx-tooltip-range-selection .actions .button-confirm {\n    text-transform: uppercase; }\n", ""]);
+exports.push([module.i, ".list-wrapper-prop {\n  justify-content: flex-end; }\n\n.samurai-vx-tooltip .tooltip-data {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n  overflow: hidden; }\n\n.samurai-vx-legend + .arrow-parent {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.samurai-vx-tooltip .tooltip-data li {\n  padding: 0;\n  margin: 0;\n  white-space: nowrap;\n  font-size: .75rem;\n  line-height: 20px; }\n\n.samurai-vx-tooltip .tooltip-data li.tooltip-header {\n  color: #b2b5bc;\n  font-size: .9rem;\n  line-height: 24px; }\n\n.samurai-vx-tooltip .tooltip-data li .data {\n  font-weight: bold; }\n\n.samurai-vx-tooltip .tooltip-data li .marker {\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  margin-right: .4rem;\n  border-radius: 50%;\n  border: 2px solid red; }\n\n.samurai-vx-tooltip-range-selection .actions {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center; }\n  .samurai-vx-tooltip-range-selection .actions .button-confirm {\n    text-transform: uppercase; }\n", ""]);
 
 // exports
 

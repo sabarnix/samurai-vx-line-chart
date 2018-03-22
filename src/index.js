@@ -324,7 +324,7 @@ export class LineChart extends React.PureComponent {
     return (
       <Group key={`${chartId}-${gIndex}`} top={(height * gIndex)}>
         <Text
-          fontSize={`${14 / 16}rem`}
+          fontSize={14}
           x={this.getConfig().margin.left}
           y={30}
           textAnchor="start"
