@@ -191,7 +191,7 @@ export class LineChart extends React.PureComponent {
 
   defaultConfig = {
     margin: {
-      top: 100,
+      top: 70,
       left: 60,
       bottom: 10,
       right: 50,
@@ -326,13 +326,14 @@ export class LineChart extends React.PureComponent {
         <Text
           fontSize={14}
           x={this.getConfig().margin.left}
-          y={30}
+          y={this.getConfig().margin.top - 15}
           textAnchor="start"
           fill={this.getConfig().fontColor}
           outlineStroke="white"
           outlineStrokeWidth={1}
           fontFamily={this.getConfig().fontFamily}
           fontWeight="bold"
+
         >
           {title}
         </Text>
@@ -562,7 +563,7 @@ export class LineChart extends React.PureComponent {
               dateFormat={this.tooltipTimeFormat}
               offset={this.getConfig().margin.left}
               xScale={this.xScale}
-              top={100}
+              top={70}
             />}
           {range.isInRangeSelectionMode && !brush.isBrushing &&
             <RangeSelectionTooltip
@@ -574,7 +575,7 @@ export class LineChart extends React.PureComponent {
               showActions
               onSelect={this.handleRangeSelectOk}
               onCancel={this.handleRangeSelectCancel}
-              top={100}
+              top={70}
             />
           }
         </div>

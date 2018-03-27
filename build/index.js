@@ -9515,7 +9515,7 @@ var LineChart = function (_React$PureComponent) {
       return data && data.isDualAxes;
     }, _this.defaultConfig = {
       margin: {
-        top: 100,
+        top: 70,
         left: 60,
         bottom: 10,
         right: 50
@@ -9603,13 +9603,14 @@ var LineChart = function (_React$PureComponent) {
           {
             fontSize: 14,
             x: _this.getConfig().margin.left,
-            y: 30,
+            y: _this.getConfig().margin.top - 15,
             textAnchor: 'start',
             fill: _this.getConfig().fontColor,
             outlineStroke: 'white',
             outlineStrokeWidth: 1,
             fontFamily: _this.getConfig().fontFamily,
             fontWeight: 'bold'
+
           },
           title
         ),
@@ -9997,7 +9998,7 @@ var LineChart = function (_React$PureComponent) {
             dateFormat: this.tooltipTimeFormat,
             offset: this.getConfig().margin.left,
             xScale: this.xScale,
-            top: 100
+            top: 70
           }),
           range.isInRangeSelectionMode && !brush.isBrushing && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(RangeSelectionTooltip, {
             start: range.start,
@@ -10008,7 +10009,7 @@ var LineChart = function (_React$PureComponent) {
             showActions: true,
             onSelect: this.handleRangeSelectOk,
             onCancel: this.handleRangeSelectCancel,
-            top: 100
+            top: 70
           })
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
