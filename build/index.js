@@ -9470,6 +9470,8 @@ var LineChart = function (_React$PureComponent) {
           };
         }
       };
+    }, _this.formatYAxisTick = function (num) {
+      return Object(__WEBPACK_IMPORTED_MODULE_14_d3_format__["a" /* format */])('.2s')(num).toString().replace(/\.0/, '');
     }, _this.shouldXAxisHighlight = function (date) {
       var dateDiff = (_this.data.dates[_this.data.dates.length - 1].getTime() - _this.data.dates[0].getTime()) / (1000 * 60 * 60);
       if (dateDiff > 15 * 24) {
@@ -9623,7 +9625,7 @@ var LineChart = function (_React$PureComponent) {
         top: _this.getConfig().margin.top,
         left: _this.getConfig().margin.left,
         scale: yScale,
-        numTicks: 4,
+        numTicks: 5,
         width: _this.xMax
       }), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_4__vx_group__["Group"],
@@ -9637,8 +9639,8 @@ var LineChart = function (_React$PureComponent) {
         top: _this.getConfig().margin.top,
         left: _this.getConfig().margin.left,
         scale: yScale,
-        numTicks: 4,
-        tickFormat: Object(__WEBPACK_IMPORTED_MODULE_14_d3_format__["a" /* format */])('.0s')
+        numTicks: 5,
+        tickFormat: _this.formatYAxisTick
       }, _this.getAxisStyle('left')))];
     }, _this.renderDualAxis = function (_ref9, gIndex, chartId) {
       var yScaleLeft = _ref9.yScaleLeft,
@@ -9667,7 +9669,7 @@ var LineChart = function (_React$PureComponent) {
         left: _this.getConfig().margin.left,
         scale: yScaleLeft,
         numTicks: 4,
-        tickFormat: Object(__WEBPACK_IMPORTED_MODULE_14_d3_format__["a" /* format */])('.0s')
+        tickFormat: _this.formatYAxisTick
       }, _this.getAxisStyle('left'), {
         label: labelLeft,
         labelProps: {
@@ -9679,7 +9681,7 @@ var LineChart = function (_React$PureComponent) {
         left: parentWidth - _this.getConfig().margin.right,
         scale: yScaleRight,
         numTicks: 4,
-        tickFormat: Object(__WEBPACK_IMPORTED_MODULE_14_d3_format__["a" /* format */])('.0s'),
+        tickFormat: _this.formatYAxisTick,
         key: chartId + '-axis-right',
         label: labelRight,
         labelProps: {
@@ -9888,7 +9890,7 @@ var LineChart = function (_React$PureComponent) {
             className: 'samurai-vx-legend',
             onClick: this.handleLegendClick,
             style: {
-              display: 'flex', maxWidth: parentWidth - 85 + 'px', whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0', cursor: 'pointer'
+              display: 'flex', maxWidth: parentWidth - 85 + 'px', whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0 0 0', cursor: 'pointer'
             },
             fill: function fill(_ref15) {
               var datum = _ref15.datum,
@@ -28294,7 +28296,7 @@ var getYScale = function getYScale(data, yMax) {
   return Object(__WEBPACK_IMPORTED_MODULE_0__vx_scale__["scaleLinear"])({
     domain: [Math.min(Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["f" /* min */])(data), 0), Math.max(0, Object(__WEBPACK_IMPORTED_MODULE_1_d3_array__["e" /* max */])(data))],
     range: [yMax, 0]
-  });
+  }).nice();
 };
 
 /***/ }),

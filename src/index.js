@@ -93,6 +93,7 @@ export class LineChart extends React.PureComponent {
     return ((parentHeight - 80) / data.charts.length) < minHeight ? minHeight : (parentHeight - (80 + this.getConfig().margin.bottom)) / data.charts.length;
   };
 
+
   getConfig = (props = this.props) => {
     const config = { ...this.defaultConfig, ...props.config };
     if (this.isDualAxis()) {
@@ -123,7 +124,7 @@ export class LineChart extends React.PureComponent {
   };
 
   getIndexMap = () => this.data.charts.map(({ chartId, series }) =>
-    series.map(({ label }) => `${chartId}-${label}`));
+  series.map(({ label }) => `${chartId}-${label}`));
 
   getPathYFromX = (index, x) => {
     const path = this.pathRefs[index];
@@ -149,6 +150,8 @@ export class LineChart extends React.PureComponent {
       textAnchor: (position === 'left') ? 'end' : (position === 'right') ? 'start' : 'middle',
     }),
   });
+
+  formatYAxisTick = (num) => (format('.2s')(num)).toString().replace(/\.0/, '')
 
   shouldXAxisHighlight = (date) => {
     const dateDiff = (this.data.dates[this.data.dates.length - 1].getTime() - this.data.dates[0].getTime()) / (1000 * 60 * 60);
@@ -347,7 +350,7 @@ export class LineChart extends React.PureComponent {
       top={this.getConfig().margin.top}
       left={this.getConfig().margin.left}
       scale={yScale}
-      numTicks={4}
+      numTicks={5}
       width={this.xMax}
     />,
     <Group top={this.getConfig().margin.top} left={this.getConfig().margin.left} key={`${chartId}-single-axis`}>
@@ -357,8 +360,8 @@ export class LineChart extends React.PureComponent {
       top={this.getConfig().margin.top}
       left={this.getConfig().margin.left}
       scale={yScale}
-      numTicks={4}
-      tickFormat={format('.0s')}
+      numTicks={5}
+      tickFormat={this.formatYAxisTick}
       {...this.getAxisStyle('left')}
     />,
   ];
@@ -386,7 +389,7 @@ export class LineChart extends React.PureComponent {
         left={this.getConfig().margin.left}
         scale={yScaleLeft}
         numTicks={4}
-        tickFormat={format('.0s')}
+        tickFormat={this.formatYAxisTick}
         {...this.getAxisStyle('left')}
         label={labelLeft}
         labelProps={{
@@ -399,7 +402,7 @@ export class LineChart extends React.PureComponent {
         left={parentWidth - this.getConfig().margin.right}
         scale={yScaleRight}
         numTicks={4}
-        tickFormat={format('.0s')}
+        tickFormat={this.formatYAxisTick}
         key={`${chartId}-axis-right`}
         label={labelRight}
         labelProps={{
@@ -466,7 +469,7 @@ export class LineChart extends React.PureComponent {
             className="samurai-vx-legend"
             onClick={this.handleLegendClick}
             style={{
-              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0', cursor: 'pointer',
+              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0 0 0', cursor: 'pointer',
             }}
             fill={({ datum, text }) => legendToggle.includes(text) ? '#cecece' : this.legendScale(datum)}
             shape={this.getConfig().legendShape}
