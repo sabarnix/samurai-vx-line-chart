@@ -26,7 +26,7 @@ function Tooltips({
             {tooltipData.filter(({ data: pointData }) => ![null, undefined].includes(pointData)).map(({ label, data: pointData, series }) =>
               (
                 <li key={pointData + label}>
-                  <span className="marker" style={{ borderColor: colorScale(series) }}></span>
+                  <span className="marker" style={{ backgroundColor: colorScale(series) }}></span>
                   {label}: <span className="data">{formatNumber(pointData)}</span>
                 </li>
               ))}

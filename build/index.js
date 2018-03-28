@@ -9656,7 +9656,7 @@ var LineChart = function (_React$PureComponent) {
         top: _this.getConfig().margin.top,
         left: _this.getConfig().margin.left,
         scale: yScaleLeft,
-        numTicks: 4,
+        numTicks: 5,
         width: _this.xMax,
         key: chartId + '-grid-row'
       }), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -9668,7 +9668,7 @@ var LineChart = function (_React$PureComponent) {
         top: _this.getConfig().margin.top,
         left: _this.getConfig().margin.left,
         scale: yScaleLeft,
-        numTicks: 4,
+        numTicks: 5,
         tickFormat: _this.formatYAxisTick
       }, _this.getAxisStyle('left'), {
         label: labelLeft,
@@ -9680,14 +9680,14 @@ var LineChart = function (_React$PureComponent) {
         top: _this.getConfig().margin.top,
         left: parentWidth - _this.getConfig().margin.right,
         scale: yScaleRight,
-        numTicks: 4,
+        numTicks: 5,
         tickFormat: _this.formatYAxisTick,
         key: chartId + '-axis-right',
         label: labelRight,
         labelProps: {
           fontFamily: _this.getConfig().fontFamily, fontSize: '12', fill: _this.getConfig().fontColor, textAnchor: 'middle'
         },
-        labelOffset: 20
+        labelOffset: 35
       }, _this.getAxisStyle('right')))];
     }, _this.renderLine = function (seriesData, yScale, id, label) {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__vx_shape__["LinePath"], {
@@ -9872,9 +9872,7 @@ var LineChart = function (_React$PureComponent) {
       var arrowStyle = {
         height: '20px',
         width: '20px',
-        backgroundColor: '#f5f5f5',
-        marginTop: '-5px',
-        marginBottom: '5px'
+        backgroundColor: '#f5f5f5'
       };
 
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -10181,40 +10179,53 @@ var HorizontalListWrapper = function (_React$PureComponent) {
     var _this = _possibleConstructorReturn(this, (HorizontalListWrapper.__proto__ || Object.getPrototypeOf(HorizontalListWrapper)).call(this));
 
     _this.calcLeftRightOffset = function () {
-      if (_this.wrapper.children[0].childNodes) {
+      var listParent = _this.wrapper.children[0];
+      if (listParent.childNodes) {
         var i = 0;
         var sum = 0;
-        var len = _this.wrapper.children[0].childNodes.length;
-        while (i < len && _this.wrapper.children[0].childNodes[i]) {
-          sum += _this.wrapper.children[0].childNodes[i].clientWidth;
+        var len = listParent.childNodes.length;
+        while (i < len && listParent.childNodes[i]) {
+          sum += listParent.childNodes[i].clientWidth;
           if (sum >= _this.state.leftOffset) {
             break;
           }
           i += 1;
         }
-        sum -= _this.wrapper.children[0].childNodes[i].clientWidth;
-        if (_this.wrapper.children[0].childNodes[i - 1]) {
+        sum -= listParent.childNodes[i].clientWidth;
+        if (listParent.childNodes[i - 1] && listParent.childNodes[i].clientWidth + listParent.childNodes[i - 1].clientWidth < listParent.clientWidth) {
           i -= 1;
-          sum -= _this.wrapper.children[0].childNodes[i].clientWidth;
+          sum -= listParent.childNodes[i].clientWidth;
         }
         _this.leftOffset = _this.state.leftOffset - sum;
 
         var temp = _this.props.parentWidth - _this.props.rightOffset + _this.state.leftOffset;
-        while (i < len && _this.wrapper.children[0].childNodes[i]) {
-          sum += _this.wrapper.children[0].childNodes[i].clientWidth;
+        while (i < len && listParent.childNodes[i]) {
+          sum += listParent.childNodes[i].clientWidth;
           if (sum > temp) {
             break;
           }
           i += 1;
         }
         i += 1;
-        if (_this.wrapper.children[0].childNodes[i]) {
-          sum += _this.wrapper.children[0].childNodes[i].clientWidth;
+        if (listParent.childNodes[i] && listParent.childNodes[i].clientWidth + listParent.childNodes[i - 1].clientWidth < listParent.clientWidth) {
+          sum += listParent.childNodes[i].clientWidth;
         }
         _this.rightOffset = sum - temp + 6;
-        var isVisible = _this.wrapper.children[0].scrollWidth > _this.props.parentWidth - _this.props.rightOffset && _this.props.isVisible;
+        var isVisible = listParent.scrollWidth > _this.props.parentWidth - _this.props.rightOffset && _this.props.isVisible;
         _this.setState({ isVisible: isVisible });
+        _this.isRightButtonDisabled();
+        _this.isLeftButtonDisabled();
       }
+    };
+
+    _this.isRightButtonDisabled = function () {
+      var temp = _this.wrapper.children[0].scrollWidth <= _this.wrapper.children[0].scrollLeft + _this.wrapper.children[0].clientWidth + 20;
+      _this.setState({ isRightDisabled: temp });
+    };
+
+    _this.isLeftButtonDisabled = function () {
+      var temp = _this.wrapper.children[0].scrollLeft === 0;
+      _this.setState({ isLeftDisabled: temp });
     };
 
     _this.handleClick = function (scrollDir) {
@@ -10222,13 +10233,17 @@ var HorizontalListWrapper = function (_React$PureComponent) {
         _this.wrapper.children[0].scrollLeft += _this.rightOffset;
       } else if (scrollDir === 'prev') {
         _this.wrapper.children[0].scrollLeft -= _this.leftOffset;
+      } else {
+        return;
       }
       _this.setState({ leftOffset: _this.wrapper.children[0].scrollLeft });
     };
 
     _this.state = {
       leftOffset: 0,
-      isVisible: false
+      isVisible: false,
+      isRightDisabled: false,
+      isLeftDisabled: false
     };
     return _this;
   }
@@ -10242,7 +10257,7 @@ var HorizontalListWrapper = function (_React$PureComponent) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       if (this.props.isNewAdded) {
-        this.wrapper.children[0].scrollLeft += this.wrapper.children[0].scrollWidth - this.wrapper.children[0].offsetWidth;
+        this.wrapper.children[0].scrollLeft = this.wrapper.children[0].scrollWidth - this.wrapper.children[0].clientWidth;
       }
       this.calcLeftRightOffset();
     }
@@ -10260,6 +10275,9 @@ var HorizontalListWrapper = function (_React$PureComponent) {
           arrowParentClassName = _props$arrowParentCla === undefined ? '' : _props$arrowParentCla,
           _props$wrapperClassNa = _props.wrapperClassName,
           wrapperClassName = _props$wrapperClassNa === undefined ? '' : _props$wrapperClassNa;
+      var _state = this.state,
+          isRightDisabled = _state.isRightDisabled,
+          isLeftDisabled = _state.isLeftDisabled;
 
       var prevIconClassName = __WEBPACK_IMPORTED_MODULE_2_classnames___default()('icons-style', { 'rotate-90': !this.props.previousIcon });
 
@@ -10276,23 +10294,23 @@ var HorizontalListWrapper = function (_React$PureComponent) {
           { className: 'arrow-parent ' + arrowParentClassName },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'span',
-            { id: 'prev', className: 'arrow ' + arrowClassName, style: arrowStyle, onClick: function onClick() {
+            { id: 'prev', className: 'arrow ' + arrowClassName + ' ' + (isLeftDisabled ? 'disabled' : ''), style: arrowStyle, onClick: function onClick() {
                 return _this2.handleClick('prev');
               } },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'i',
-              { className: 'material-icons ' + prevIconClassName },
+              { className: 'material-icons ' + prevIconClassName + ' ' + (isLeftDisabled ? 'icons-style-disabled' : '') },
               this.props.previousIcon || 'arrow_drop_down'
             )
           ),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'span',
-            { id: 'next', className: 'arrow ' + arrowClassName, style: arrowStyle, onClick: function onClick() {
+            { id: 'next', className: 'arrow ' + arrowClassName + ' ' + (isRightDisabled ? 'disabled' : ''), style: arrowStyle, onClick: function onClick() {
                 return _this2.handleClick('next');
               } },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'i',
-              { className: 'material-icons ' + nextIconClassName },
+              { className: 'material-icons ' + nextIconClassName + ' ' + (isRightDisabled ? 'icons-style-disabled' : '') },
               this.props.nextIcon || 'arrow_drop_up'
             )
           )
@@ -10427,7 +10445,7 @@ exports = module.exports = __webpack_require__(6)(undefined);
 
 
 // module
-exports.push([module.i, ".list-wrapper {\n  display: flex; }\n\n.arrow-parent {\n  display: flex;\n  padding: 10px 10px 0 5px;\n  flex-shrink: 0; }\n  .arrow-parent .arrow {\n    cursor: pointer;\n    position: relative;\n    border-radius: 4px;\n    padding: 0px 4px;\n    margin: 0px 5px;\n    background-color: #FFF;\n    display: flex; }\n  .arrow-parent .icons-style {\n    line-height: unset;\n    color: #8A91A5;\n    font-size: 24px;\n    font-weight: 500; }\n  .arrow-parent .rotate-90 {\n    -webkit-transform: rotate(90deg);\n    -moz-transform: rotate(90deg);\n    -ms-transform: rotate(90deg);\n    -o-transform: rotate(90deg);\n    transform: rotate(90deg); }\n", ""]);
+exports.push([module.i, ".list-wrapper {\n  display: flex; }\n\n.arrow-parent {\n  display: flex;\n  padding: 10px 10px 0 5px;\n  flex-shrink: 0; }\n  .arrow-parent .arrow {\n    cursor: pointer;\n    position: relative;\n    border-radius: 4px;\n    padding: 0px 4px;\n    margin: 0px 5px;\n    background-color: #FFF;\n    display: flex; }\n  .arrow-parent .icons-style {\n    line-height: unset;\n    color: #8A91A5;\n    font-size: 24px;\n    font-weight: 500; }\n    .arrow-parent .icons-style-disabled {\n      color: #d2d5dc; }\n  .arrow-parent .rotate-90 {\n    -webkit-transform: rotate(90deg);\n    -moz-transform: rotate(90deg);\n    -ms-transform: rotate(90deg);\n    -o-transform: rotate(90deg);\n    transform: rotate(90deg); }\n  .arrow-parent .disabled:hover {\n    cursor: not-allowed; }\n", ""]);
 
 // exports
 
@@ -28246,7 +28264,7 @@ function Tooltips(_ref) {
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'li',
               { key: pointData + label },
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('span', { className: 'marker', style: { borderColor: colorScale(series) } }),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('span', { className: 'marker', style: { backgroundColor: colorScale(series) } }),
               label,
               ': ',
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28503,7 +28521,7 @@ exports = module.exports = __webpack_require__(395)(false);
 
 
 // module
-exports.push([module.i, ".list-wrapper-prop {\n  justify-content: flex-end; }\n\n.samurai-vx-tooltip .tooltip-data {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n  overflow: hidden; }\n\n.samurai-vx-legend + .arrow-parent {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.samurai-vx-tooltip .tooltip-data li {\n  padding: 0;\n  margin: 0;\n  white-space: nowrap;\n  font-size: .75rem;\n  line-height: 20px; }\n\n.samurai-vx-tooltip .tooltip-data li.tooltip-header {\n  color: #b2b5bc;\n  font-size: .9rem;\n  line-height: 24px; }\n\n.samurai-vx-tooltip .tooltip-data li .data {\n  font-weight: bold; }\n\n.samurai-vx-tooltip .tooltip-data li .marker {\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  margin-right: .4rem;\n  border-radius: 50%;\n  border: 2px solid red; }\n\n.samurai-vx-tooltip-range-selection .actions {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center; }\n  .samurai-vx-tooltip-range-selection .actions .button-confirm {\n    text-transform: uppercase; }\n", ""]);
+exports.push([module.i, ".list-wrapper-prop {\n  justify-content: flex-end; }\n\n.samurai-vx-tooltip .tooltip-data {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n  overflow: hidden; }\n\n.samurai-vx-legend + .arrow-parent {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.samurai-vx-tooltip .tooltip-data li {\n  padding: 0;\n  margin: 0;\n  white-space: nowrap;\n  font-size: .75rem;\n  line-height: 20px; }\n\n.samurai-vx-tooltip .tooltip-data li.tooltip-header {\n  color: #b2b5bc;\n  font-size: .9rem;\n  line-height: 24px; }\n\n.samurai-vx-tooltip .tooltip-data li .data {\n  font-weight: bold; }\n\n.samurai-vx-tooltip .tooltip-data li .marker {\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  margin-right: .4rem;\n  border-radius: 50%; }\n\n.samurai-vx-tooltip-range-selection .actions {\n  margin-top: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center; }\n  .samurai-vx-tooltip-range-selection .actions .button-confirm {\n    text-transform: uppercase; }\n", ""]);
 
 // exports
 

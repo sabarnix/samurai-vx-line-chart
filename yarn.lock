@@ -4229,8 +4229,8 @@ levn@^0.3.0, levn@~0.3.0:
     type-check "~0.3.2"
 
 "list-wrapper@git+ssh://git@tree.mn:shama.k/list-wrapper.git":
-  version "1.0.0"
-  resolved "git+ssh://git@tree.mn:shama.k/list-wrapper.git#6ac3554567152bd4b6f9a2aa21bb309783b8d388"
+  version "1.0.4"
+  resolved "git+ssh://git@tree.mn:shama.k/list-wrapper.git#ed55bd33b4e6f009ad94d1930de880f920dee07a"
   dependencies:
     classnames "^2.2.5"
 

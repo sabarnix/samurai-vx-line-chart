@@ -376,7 +376,7 @@ export class LineChart extends React.PureComponent {
         top={this.getConfig().margin.top}
         left={this.getConfig().margin.left}
         scale={yScaleLeft}
-        numTicks={4}
+        numTicks={5}
         width={this.xMax}
         key={`${chartId}-grid-row`}
       />,
@@ -388,7 +388,7 @@ export class LineChart extends React.PureComponent {
         top={this.getConfig().margin.top}
         left={this.getConfig().margin.left}
         scale={yScaleLeft}
-        numTicks={4}
+        numTicks={5}
         tickFormat={this.formatYAxisTick}
         {...this.getAxisStyle('left')}
         label={labelLeft}
@@ -401,14 +401,14 @@ export class LineChart extends React.PureComponent {
         top={this.getConfig().margin.top}
         left={parentWidth - this.getConfig().margin.right}
         scale={yScaleRight}
-        numTicks={4}
+        numTicks={5}
         tickFormat={this.formatYAxisTick}
         key={`${chartId}-axis-right`}
         label={labelRight}
         labelProps={{
           fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().fontColor, textAnchor: 'middle',
         }}
-        labelOffset={20}
+        labelOffset={35}
         {...this.getAxisStyle('right')}
       />,
     ];
@@ -455,8 +455,6 @@ export class LineChart extends React.PureComponent {
       height: '20px',
       width: '20px',
       backgroundColor: '#f5f5f5',
-      marginTop: '-5px',
-      marginBottom: '5px',
     };
 
     return (
