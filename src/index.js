@@ -208,6 +208,7 @@ export class LineChart extends React.PureComponent {
     axisLabelSize: 10,
     legendShape: LegendShape,
     hoverlineColor: 'black',
+    axesLabelColor: 'black',
   };
 
   pathRefs = {};
@@ -363,6 +364,9 @@ export class LineChart extends React.PureComponent {
       numTicks={5}
       tickFormat={this.formatYAxisTick}
       {...this.getAxisStyle('left')}
+      labelProps={{
+        fill: this.getConfig().axesLabelColor,
+      }}
     />,
   ];
 
@@ -393,7 +397,7 @@ export class LineChart extends React.PureComponent {
         {...this.getAxisStyle('left')}
         label={labelLeft}
         labelProps={{
-          fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().fontColor, textAnchor: 'middle',
+          fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().axesLabelColor, textAnchor: 'middle',
         }}
         key={`${chartId}-axis-left`}
       />,
@@ -406,7 +410,7 @@ export class LineChart extends React.PureComponent {
         key={`${chartId}-axis-right`}
         label={labelRight}
         labelProps={{
-          fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().fontColor, textAnchor: 'middle',
+          fontFamily: this.getConfig().fontFamily, fontSize: '12', fill: this.getConfig().axesLabelColor, textAnchor: 'middle',
         }}
         labelOffset={35}
         {...this.getAxisStyle('right')}

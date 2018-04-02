@@ -48,7 +48,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --watch",
     "lint": "eslint --fix .",
-    "build": "webpack",
+    "build": "webpack --hide-modules --progress",
+    "watch": "npm run build -- --watch",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

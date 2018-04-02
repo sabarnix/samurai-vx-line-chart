@@ -9530,7 +9530,8 @@ var LineChart = function (_React$PureComponent) {
       fontColor: 'black',
       axisLabelSize: 10,
       legendShape: LegendShape,
-      hoverlineColor: 'black'
+      hoverlineColor: 'black',
+      axesLabelColor: 'black'
     }, _this.pathRefs = {}, _this.x = function (d) {
       return new Date(d[0]);
     }, _this.y = function (d) {
@@ -9641,7 +9642,11 @@ var LineChart = function (_React$PureComponent) {
         scale: yScale,
         numTicks: 5,
         tickFormat: _this.formatYAxisTick
-      }, _this.getAxisStyle('left')))];
+      }, _this.getAxisStyle('left'), {
+        labelProps: {
+          fill: _this.getConfig().axesLabelColor
+        }
+      }))];
     }, _this.renderDualAxis = function (_ref9, gIndex, chartId) {
       var yScaleLeft = _ref9.yScaleLeft,
           yScaleRight = _ref9.yScaleRight,
@@ -9673,7 +9678,7 @@ var LineChart = function (_React$PureComponent) {
       }, _this.getAxisStyle('left'), {
         label: labelLeft,
         labelProps: {
-          fontFamily: _this.getConfig().fontFamily, fontSize: '12', fill: _this.getConfig().fontColor, textAnchor: 'middle'
+          fontFamily: _this.getConfig().fontFamily, fontSize: '12', fill: _this.getConfig().axesLabelColor, textAnchor: 'middle'
         },
         key: chartId + '-axis-left'
       })), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__vx_axis__["AxisRight"], _extends({
@@ -9685,7 +9690,7 @@ var LineChart = function (_React$PureComponent) {
         key: chartId + '-axis-right',
         label: labelRight,
         labelProps: {
-          fontFamily: _this.getConfig().fontFamily, fontSize: '12', fill: _this.getConfig().fontColor, textAnchor: 'middle'
+          fontFamily: _this.getConfig().fontFamily, fontSize: '12', fill: _this.getConfig().axesLabelColor, textAnchor: 'middle'
         },
         labelOffset: 35
       }, _this.getAxisStyle('right')))];
