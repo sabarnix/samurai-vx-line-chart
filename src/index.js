@@ -245,7 +245,7 @@ export class LineChart extends React.PureComponent {
           title, series, hasTooltip, id: chartId,
         }) => {
           if (this.isDualAxis(visibleData)) {
-            const [{ data: seriesLeft = [], label: labelLeft }, { data: seriesRight = [], label: labelRight }] = series;
+            const [{ data: seriesLeft = [], label: labelLeft }, { data: seriesRight = [], label: labelRight } = {}] = series;
             return {
               title,
               series,
@@ -477,6 +477,8 @@ export class LineChart extends React.PureComponent {
             shape={this.getConfig().legendShape}
             shapeWidth={10}
             shapeHeight={10}
+            domain={this.uniqueSeriesLabel}
+            labelTransform={({scale, labelFormat}) => (datum, index) => ({datum, index, text: datum === undefined ? '' : `${labelFormat(datum, index)}`, value: scale(datum)})}
           />
         </HorizontalListWrapper>
         <div

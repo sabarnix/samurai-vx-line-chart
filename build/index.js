@@ -806,6 +806,7 @@ function Legend(_ref) {
       restProps = _objectWithoutProperties(_ref, ['className', 'style', 'shapeStyle', 'scale', 'shape', 'domain', 'fill', 'size', 'labelFormat', 'labelTransform', 'shapeWidth', 'shapeHeight', 'shapeMargin', 'labelAlign', 'labelMargin', 'itemMargin', 'direction', 'itemDirection']);
 
   domain = domain || scale.domain();
+  debugger;
   var labels = domain.map(labelTransform({ scale: scale, labelFormat: labelFormat }));
   return _react2.default.createElement(
     'div',
@@ -9799,8 +9800,10 @@ var LineChart = function (_React$PureComponent) {
                   _series$$data = _series$.data,
                   seriesLeft = _series$$data === undefined ? [] : _series$$data,
                   labelLeft = _series$.label,
-                  _series$2 = _series[1],
-                  _series$2$data = _series$2.data,
+                  _series$2 = _series[1];
+
+              _series$2 = _series$2 === undefined ? {} : _series$2;
+              var _series$2$data = _series$2.data,
                   seriesRight = _series$2$data === undefined ? [] : _series$2$data,
                   labelRight = _series$2.label;
 
@@ -9902,7 +9905,15 @@ var LineChart = function (_React$PureComponent) {
             },
             shape: this.getConfig().legendShape,
             shapeWidth: 10,
-            shapeHeight: 10
+            shapeHeight: 10,
+            domain: this.uniqueSeriesLabel,
+            labelTransform: function labelTransform(_ref16) {
+              var scale = _ref16.scale,
+                  labelFormat = _ref16.labelFormat;
+              return function (datum, index) {
+                return { datum: datum, index: index, text: datum === undefined ? '' : '' + labelFormat(datum, index), value: scale(datum) };
+              };
+            }
           })
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
