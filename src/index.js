@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import HorizontalListWrapper from 'list-wrapper';
 import { LinePath, Bar } from '@vx/shape';
 import { Group } from '@vx/group';
-import { withParentSize } from '@vx/responsive';
 import { AxisBottom, AxisLeft, AxisRight } from '@vx/axis';
 import { GridRows } from '@vx/grid';
 import { Text } from '@vx/text';
@@ -20,6 +19,7 @@ import throttle from 'lodash.throttle';
 import moize from 'moize';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import { compose } from 'recompose';
+import withParentSize from './enhancer/withParentSize';
 import RangeSelectionTooltipComp from './rangeSelectionTooltip';
 import LegendShapeComp from './LegendShape';
 import RangeSelectionBarsComp from './rangeSelectionBars';
@@ -90,7 +90,7 @@ export class LineChart extends React.PureComponent {
     const data = this.data || props.data;
     const { minHeight } = this.getConfig();
     if (!data.charts.length) return 0;
-    return ((parentHeight - 80) / data.charts.length) < minHeight ? minHeight : (parentHeight - (80 + this.getConfig().margin.bottom)) / data.charts.length;
+    return ((parentHeight - 60) / data.charts.length) < minHeight ? minHeight : (parentHeight - (60 + this.getConfig().margin.bottom)) / data.charts.length;
   };
 
 
@@ -124,7 +124,7 @@ export class LineChart extends React.PureComponent {
   };
 
   getIndexMap = () => this.data.charts.map(({ chartId, series }) =>
-  series.map(({ label }) => `${chartId}-${label}`));
+    series.map(({ label }) => `${chartId}-${label}`));
 
   getPathYFromX = (index, x) => {
     const path = this.pathRefs[index];
@@ -199,7 +199,7 @@ export class LineChart extends React.PureComponent {
       bottom: 10,
       right: 50,
     },
-    minHeight: 300,
+    minHeight: 240,
     colors: ['rgb(107, 157, 255)', 'rgb(252, 137, 159)'],
     tooltipTimeFormat: '%b %d, %H:%M',
     tooltipTimeFormatWithoutDate: '%H:%M',
@@ -478,13 +478,15 @@ export class LineChart extends React.PureComponent {
             shapeWidth={10}
             shapeHeight={10}
             domain={this.uniqueSeriesLabel}
-            labelTransform={({scale, labelFormat}) => (datum, index) => ({datum, index, text: datum === undefined ? '' : `${labelFormat(datum, index)}`, value: scale(datum)})}
+            labelTransform={({ scale, labelFormat }) => (datum, index) => ({
+              datum, index, text: datum === undefined ? '' : `${labelFormat(datum, index)}`, value: scale(datum),
+            })}
           />
         </HorizontalListWrapper>
         <div
           id="charts"
           style={{
-            height: parentHeight - 30 - 50, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
+            height: parentHeight - 60, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
           }}
         >
           <div style={{ position: 'relative', height: height * this.data.charts.length }}>
