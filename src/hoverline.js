@@ -21,7 +21,7 @@ function Hoverline({
         indexMap.map((charts, gIndex) => (
           <Group top={(singleChartHeight * gIndex) + margin.top}>
             <Group>
-              { charts.map((chartIndex, seriesIndex) => [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [
+              { charts.map((chartIndex, seriesIndex) => !tooltipData[gIndex] || [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [
                 <circle
                   key={`${chartIndex}-outer`}
                   cx={tooltipLeft}

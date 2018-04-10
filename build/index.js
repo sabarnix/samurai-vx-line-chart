@@ -26778,7 +26778,7 @@ function Hoverline(_ref) {
           __WEBPACK_IMPORTED_MODULE_2__vx_group__["Group"],
           null,
           charts.map(function (chartIndex, seriesIndex) {
-            return [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('circle', {
+            return !tooltipData[gIndex] || [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('circle', {
               key: chartIndex + '-outer',
               cx: tooltipLeft,
               cy: getPathYFromX(chartIndex, tooltipLeft),
