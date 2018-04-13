@@ -151,7 +151,7 @@ export class LineChart extends React.PureComponent {
     }),
   });
 
-  formatYAxisTick = (num) => (format('.2s')(num)).toString().replace(/\.0/, '')
+  formatYAxisTick = (num) => num < 1 ? num.toFixed(2) : (format('.2s')(num)).toString().replace(/\.0/, '')
 
   shouldXAxisHighlight = (date) => {
     const dateDiff = (this.data.dates[this.data.dates.length - 1].getTime() - this.data.dates[0].getTime()) / (1000 * 60 * 60);
