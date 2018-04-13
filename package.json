@@ -38,9 +38,6 @@
     "list-wrapper": "git+ssh://git@tree.mn:shama.k/list-wrapper.git",
     "lodash.throttle": "^4.1.1",
     "moize": "^4.0.4",
-    "prop-types": "^15.x || ^16.x",
-    "react": "^15.5.0 || ^16.x",
-    "react-dom": "^15.x || ^16.x",
     "react-motion": "^0.5.2",
     "recompose": "^0.26.0"
   },
@@ -84,6 +81,7 @@
     "node-sass": "^4.7.2",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.20.2",
+    "uglify-js-plugin": "^0.0.6",
     "webpack": "^3.11.0"
   }
 }

@@ -1,4 +1,5 @@
-const path = require('path');
+const path = require('path')
+const UglifyJsPlugin = require('uglify-js-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -23,6 +24,9 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new UglifyJsPlugin(),
+  ],
   externals: {
     react: {
       commonjs2: 'react',
