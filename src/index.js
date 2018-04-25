@@ -58,7 +58,7 @@ export class LineChart extends React.PureComponent {
     this.handleMouseMove(data, event);
   };
 
-  onMouseLeave = () => () => this.props.hideTooltip();
+  onMouseLeave = () => compose(this.handleMouseMove.cancel, this.props.hideTooltip);
 
   onMouseDown = (event) => {
     const { onBrushStart, enableRangeSelection } = this.props;
@@ -299,7 +299,6 @@ export class LineChart extends React.PureComponent {
     const d1 = dates[index];
     const effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
     const { brush, onBrushDrag } = this.props;
-
     if (brush.start && brush.isBrushing) onBrushDrag(this.localPoint(event));
 
     showTooltip({
