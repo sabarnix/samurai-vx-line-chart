@@ -2,7 +2,7 @@
   "name": "samurai-vx-line-chart",
   "version": "0.0.3",
   "description": "Multiple line charts with common fixed xAxis using VX",
-  "main": "build/index.js",
+  "main": "src/index.js",
   "keywords": [
     "react",
     "reactjs",
@@ -79,6 +79,8 @@
     "eslint-plugin-react": "^7.7.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "node-sass": "^4.7.2",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.20.2",
     "uglify-js-plugin": "^0.0.6",

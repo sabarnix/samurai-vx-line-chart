@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HorizontalListWrapper from 'list-wrapper';
-import { LinePath, Bar } from '@vx/shape';
+import { LinePath, Bar, Line } from '@vx/shape';
 import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft, AxisRight } from '@vx/axis';
 import { GridRows } from '@vx/grid';
@@ -21,6 +21,10 @@ import shallowEqual from 'fbjs/lib/shallowEqual';
 import { compose } from 'recompose';
 import commarize from './utils/commarize';
 import withParentSize from './enhancer/withParentSize';
+import withAnnotation from './enhancer/withAnnotation';
+import AnnotationLine from './AnnotationLine';
+import AnnotationTooltip from './AnnotationTooltip';
+import AnnotationTimeline from './AnnotationTimeline';
 import RangeSelectionTooltipComp from './rangeSelectionTooltip';
 import LegendShapeComp from './LegendShape';
 import RangeSelectionBarsComp from './rangeSelectionBars';
@@ -39,6 +43,9 @@ const RangeSelectionBars = moize.reactSimple(RangeSelectionBarsComp);
 const HoverLine = moize.reactSimple(HoverLineComp);
 const Tooltips = moize.reactSimple(TooltipsComp);
 
+const LEGEND_HEIGHT = 75;
+const ANNOTATION_HEIGHT = 40;
+
 export class LineChart extends React.PureComponent {
   componentWillMount() {
     this.update();
@@ -56,6 +63,7 @@ export class LineChart extends React.PureComponent {
 
   onMouseMove = (data) => (event) => {
     event.persist();
+    if (this.props.disableTooltip) return;
     this.handleMouseMove(data, event);
   };
 
@@ -86,12 +94,14 @@ export class LineChart extends React.PureComponent {
     }
   };
 
+  getOffsetHeight = () => this.props.hasAnnotation ? LEGEND_HEIGHT + ANNOTATION_HEIGHT : LEGEND_HEIGHT;
+
   getSingleChartHeight = (props = this.props) => {
     const { parentHeight } = props;
     const data = this.data || props.data;
     const { minHeight } = this.getConfig();
     if (!data.charts.length) return 0;
-    return Math.max((parentHeight - (75 + this.getConfig().margin.bottom)) / data.charts.length, minHeight);
+    return Math.max((parentHeight - (this.getOffsetHeight() + this.getConfig().margin.bottom)) / data.charts.length, minHeight);
   };
 
 
@@ -138,7 +148,7 @@ export class LineChart extends React.PureComponent {
   getAxisStyle = (position = 'left') => ({
     hideTicks: true,
     hideAxisLine: true,
-    stroke: '#eaf0f6',
+    stroke: this.getConfig().axisStroke,
     tickLabelProps: (value) => ({
       fill: this.getConfig().tickTextColor || this.getConfig().fontColor,
       fontFamily: this.getConfig().tickTextFontFamily || this.getConfig().fontFamily,
@@ -207,9 +217,29 @@ export class LineChart extends React.PureComponent {
     fontFamily: 'Arial',
     fontColor: 'black',
     axisLabelSize: 10,
+    legendBg: '#eee',
     legendShape: LegendShape,
     hoverlineColor: 'black',
     axesLabelColor: 'black',
+    axisStroke: '#eaf0f6',
+    annotation: {
+      stroke: '#535353',
+      strokeWidth: '1',
+      style: {
+        opacity: '.5',
+        cursor: 'pointer',
+      },
+    },
+    annotationHover: {
+      strokeWidth: '4',
+      style: {
+        opacity: '.8',
+        cursor: 'pointer',
+      },
+    },
+    annotationActive: {
+      stroke: 'yellow',
+    },
   };
 
   pathRefs = {};
@@ -332,11 +362,8 @@ export class LineChart extends React.PureComponent {
           y={this.getConfig().margin.top - 15}
           textAnchor="start"
           fill={this.getConfig().fontColor}
-          outlineStroke="white"
-          outlineStrokeWidth={1}
           fontFamily={this.getConfig().fontFamily}
           fontWeight="bold"
-
         >
           {title}
         </Text>
@@ -441,6 +468,10 @@ export class LineChart extends React.PureComponent {
       brush,
       range,
       legendToggle,
+      renderAnnotation,
+      hasAnnotation,
+      renderAnnotationTooltip,
+      renderAnnotationTimeline,
     } = this.props;
 
     if (!this.data) {
@@ -462,30 +493,33 @@ export class LineChart extends React.PureComponent {
 
     return (
       <div style={{ background: '#fff' }}>
-        <HorizontalListWrapper parentWidth={parentWidth} rightOffset={85} isVisible arrowStyle={arrowStyle} wrapperClassName="list-wrapper-prop">
-          <LegendOrdinal
-            scale={this.legendScale}
-            direction="row"
-            labelMargin="0 15px 0 0"
-            className="samurai-vx-legend"
-            onClick={this.handleLegendClick}
-            style={{
-              display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0 0 0', cursor: 'pointer',
-            }}
-            fill={({ datum, text }) => legendToggle.map((_) => String(_)).includes(text) ? '#cecece' : this.legendScale(datum)}
-            shape={this.getConfig().legendShape}
-            shapeWidth={10}
-            shapeHeight={10}
-            domain={this.uniqueSeriesLabel}
-            labelTransform={({ scale, labelFormat }) => (datum, index) => ({
-              datum, index, text: datum === undefined ? '' : `${labelFormat(datum, index)}`, value: scale(datum),
-            })}
-          />
-        </HorizontalListWrapper>
+        <div style={{ background: '#eee' }}>
+          <HorizontalListWrapper parentWidth={parentWidth} rightOffset={85} isVisible arrowStyle={arrowStyle} wrapperClassName="list-wrapper-prop">
+            <LegendOrdinal
+              scale={this.legendScale}
+              direction="row"
+              labelMargin="0 15px 0 0"
+              className="samurai-vx-legend"
+              onClick={this.handleLegendClick}
+              style={{
+                display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0', cursor: 'pointer',
+              }}
+              fill={({ datum, text }) => legendToggle.map((_) => String(_)).includes(text) ? '#cecece' : this.legendScale(datum)}
+              shape={this.getConfig().legendShape}
+              shapeWidth={10}
+              shapeHeight={10}
+              domain={this.uniqueSeriesLabel}
+              labelTransform={({ scale, labelFormat }) => (datum, index) => ({
+                datum, index, text: datum === undefined ? '' : `${labelFormat(datum, index)}`, value: scale(datum),
+              })}
+            />
+          </HorizontalListWrapper>
+        </div>
+        {hasAnnotation && renderAnnotationTimeline()}
         <div
           id="charts"
           style={{
-            height: parentHeight - 75, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
+            height: parentHeight - this.getOffsetHeight(), overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
           }}
         >
           <div style={{ position: 'relative', height: height * this.data.charts.length }}>
@@ -552,6 +586,7 @@ export class LineChart extends React.PureComponent {
                 singleChartHeight={this.getSingleChartHeight()}
                 hoverlineColor={this.getConfig().hoverlineColor}
               />}
+              {hasAnnotation && renderAnnotation()}
             </svg>
             {tooltipData && !brush.isBrushing && !range.isInRangeSelectionMode &&
             <Tooltips
@@ -586,6 +621,7 @@ export class LineChart extends React.PureComponent {
               top={70}
             />
           }
+          {hasAnnotation && renderAnnotationTooltip()}
         </div>
         <svg width={width} height={30} style={{ background: '#fff' }}>
           <AxisBottom
@@ -627,6 +663,11 @@ LineChart.propTypes = {
   brush: PropTypes.object,
   onToggleLegend: PropTypes.func,
   legendToggle: PropTypes.array,
+  renderAnnotation: PropTypes.func,
+  hasAnnotation: PropTypes.bool,
+  renderAnnotationTooltip: PropTypes.func,
+  renderAnnotationTimeline: PropTypes.func,
+  disableTooltip: PropTypes.bool,
 };
 
 export default compose(
@@ -635,4 +676,5 @@ export default compose(
   withBrush,
   withLegendToggle,
   withRangeSelection,
+  withAnnotation({ AnnotationComponent: AnnotationLine, AnnotationTooltipComponent: AnnotationTooltip, AnnotationTimelineComponent: AnnotationTimeline }),
 )(LineChart);
