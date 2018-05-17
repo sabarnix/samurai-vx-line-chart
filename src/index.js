@@ -300,15 +300,14 @@ export class LineChart extends React.PureComponent {
     const effectiveIndex = x0 - d0 > d1 - x0 ? index : index - 1;
     const { brush, onBrushDrag } = this.props;
     if (brush.start && brush.isBrushing) onBrushDrag(this.localPoint(event));
-
     showTooltip({
-      tooltipData: data.charts.map(({ series, hasTooltip, id: chartId }) => ({
+      tooltipData: data.charts.map(({ series, hasTooltip, chartId }) => ({
         id: `${chartId}-tooltip`,
         date: (hasTooltip) ? this.tooltipTimeFormatWithoutDate(dates[effectiveIndex]) : this.tooltipTimeFormat(dates[effectiveIndex]),
         data: series.map(({ label, data: seriesData, tooltip = [] }) => ({
-          label: (tooltip.length) ? this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label,
-          data: seriesData[effectiveIndex],
-          series: label,
+          label: String((tooltip.length) ? this.tooltipTimeFormat(new Date(tooltip[effectiveIndex])) : label),
+          data: String(seriesData[effectiveIndex]),
+          series: String(label),
         })),
       })),
       tooltipLeft: this.xScale(dates[effectiveIndex]),
