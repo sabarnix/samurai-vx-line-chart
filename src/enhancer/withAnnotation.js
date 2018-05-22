@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Group } from '@vx/group';
 import { compose, withState, withHandlers } from 'recompose';
 
-export default ({ AnnotationComponent, AnnotationTooltipComponent, AnnotationTimelineComponent }) => (BaseComponent) => {
+export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseComponent) => {
   class WrappedComponent extends React.Component {
     componentWillReceiveProps(nextProps) {
       if (!nextProps.annotation && nextProps.annotationSelection.hasActiveAnnotation) {
@@ -46,7 +46,12 @@ export default ({ AnnotationComponent, AnnotationTooltipComponent, AnnotationTim
     }
 
     renderAnnotationTooltip = () => {
-      const { annotation, annotationSelection: { activeAnnotation: activeAnnotationIndex, hasActiveAnnotation } } = this.props;
+      const {
+        annotation,
+        annotationSelection: { activeAnnotation: activeAnnotationIndex, hasActiveAnnotation },
+        closeActive,
+        annotationTooltipComponent: AnnotationTooltipComponent,
+      } = this.props;
       if (!hasActiveAnnotation) return null;
       const activeAnnotation = annotation[activeAnnotationIndex];
       if (!activeAnnotation) return null;
@@ -58,6 +63,7 @@ export default ({ AnnotationComponent, AnnotationTooltipComponent, AnnotationTim
         xMax={this.chart.xMax}
         opacity={1}
         id={activeAnnotation}
+        closeTooltip={closeActive}
       />);
     }
 
@@ -105,6 +111,7 @@ export default ({ AnnotationComponent, AnnotationTooltipComponent, AnnotationTim
     updateActive: PropTypes.func,
     closeActive: PropTypes.func,
     parentWidth: PropTypes.number,
+    annotationTooltipComponent: PropTypes.func,
   };
 
   return compose(

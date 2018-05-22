@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HorizontalListWrapper from 'list-wrapper';
-import { LinePath, Bar, Line } from '@vx/shape';
+import { LinePath, Bar } from '@vx/shape';
 import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft, AxisRight } from '@vx/axis';
 import { GridRows } from '@vx/grid';
@@ -23,7 +23,6 @@ import commarize from './utils/commarize';
 import withParentSize from './enhancer/withParentSize';
 import withAnnotation from './enhancer/withAnnotation';
 import AnnotationLine from './AnnotationLine';
-import AnnotationTooltip from './AnnotationTooltip';
 import AnnotationTimeline from './AnnotationTimeline';
 import RangeSelectionTooltipComp from './rangeSelectionTooltip';
 import LegendShapeComp from './LegendShape';
@@ -676,5 +675,5 @@ export default compose(
   withBrush,
   withLegendToggle,
   withRangeSelection,
-  withAnnotation({ AnnotationComponent: AnnotationLine, AnnotationTooltipComponent: AnnotationTooltip, AnnotationTimelineComponent: AnnotationTimeline }),
+  withAnnotation({ AnnotationComponent: AnnotationLine, AnnotationTimelineComponent: AnnotationTimeline }),
 )(LineChart);
