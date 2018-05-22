@@ -16,8 +16,8 @@ function AnnotationTooltipCircle({
       <circle
         key={`annotation-${timestamp.toString()}-outer`}
         cx={x}
-        cy={29}
-        r={10}
+        cy={32}
+        r={7}
         fill={color}
         stroke={color}
         style={{ cursor: 'pointer' }}
@@ -28,8 +28,8 @@ function AnnotationTooltipCircle({
       <circle
         key={`annotation-${timestamp.toString()}-inner`}
         cx={x}
-        cy={29}
-        r={4}
+        cy={32}
+        r={3}
         fill={color}
         stroke={color}
         strokeWidth="1.5"

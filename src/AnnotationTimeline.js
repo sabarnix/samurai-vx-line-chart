@@ -12,11 +12,11 @@ function AnnotationTimeine({
       <Line
         from={{
           x: 0,
-          y: 29,
+          y: 32,
         }}
         to={{
           x: xMax,
-          y: 29,
+          y: 32,
         }}
         stroke="#f5f5f5"
       />

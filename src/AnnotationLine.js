@@ -4,7 +4,7 @@ import { Group } from '@vx/group';
 import PropTypes from 'prop-types';
 
 function AnnotationLine({
-  height, left, margin, style
+  height, left, margin, style,
 }) {
   return (
     <Group left={margin.left}>
@@ -17,7 +17,7 @@ function AnnotationLine({
           x: left,
           y: height,
         }}
-        { ...style }
+        {...style}
       />
     </Group>
   );
