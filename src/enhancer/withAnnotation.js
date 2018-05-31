@@ -59,7 +59,7 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
         data={activeAnnotation.data}
         left={this.getAnnotationLeft(activeAnnotation.timestamp) + this.chart.getConfig().margin.left}
         date={this.chart.tooltipTimeFormat(activeAnnotation.timestamp)}
-        top={60}
+        top={102}
         xMax={this.chart.xMax}
         opacity={1}
         id={activeAnnotation}
@@ -70,10 +70,10 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
     renderAnnotationTimeline = () => {
       const { parentWidth, annotation, annotationSelection: { activeAnnotation } } = this.props;
       return (
-        <svg height={40} width={parentWidth}>
+        <svg height={80} width={parentWidth}>
           <AnnotationTimelineComponent
             xMax={this.chart.xMax}
-            margin={this.chart.getConfig().margin}
+            config={this.chart.getConfig()}
             annotations={annotation}
             xScale={this.chart.xScale}
             onClick={this.handleClick}

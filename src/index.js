@@ -43,7 +43,7 @@ const HoverLine = moize.reactSimple(HoverLineComp);
 const Tooltips = moize.reactSimple(TooltipsComp);
 
 const LEGEND_HEIGHT = 75;
-const ANNOTATION_HEIGHT = 40;
+const ANNOTATION_HEIGHT = 80;
 
 export class LineChart extends React.PureComponent {
   componentWillMount() {
