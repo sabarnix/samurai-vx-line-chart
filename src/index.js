@@ -471,7 +471,7 @@ export class LineChart extends React.PureComponent {
             style={{
               display: 'flex', maxWidth: `${parentWidth - 85}px`, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: '35px', padding: '15px 0 0 0', cursor: 'pointer',
             }}
-            fill={({ datum, text }) => legendToggle.includes(text) ? '#cecece' : this.legendScale(datum)}
+            fill={({ datum, text }) => legendToggle.map((_) => String(_)).includes(text) ? '#cecece' : this.legendScale(datum)}
             shape={this.getConfig().legendShape}
             shapeWidth={10}
             shapeHeight={10}
