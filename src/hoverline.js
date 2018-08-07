@@ -20,34 +20,32 @@ function Hoverline({
       {
         indexMap.map((charts, gIndex) => (
           <Group top={(singleChartHeight * gIndex) + margin.top}>
-            <Group>
-              { charts.map((chartIndex, seriesIndex) => !tooltipData[gIndex] || !tooltipData[gIndex].data || !tooltipData[gIndex].data[seriesIndex] || [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [
-                <circle
-                  key={`${chartIndex}-outer`}
-                  cx={tooltipLeft}
-                  cy={getPathYFromX(chartIndex, tooltipLeft)}
-                  r={12}
-                  fill={getColorFromPath(chartIndex)}
-                  stroke={getColorFromPath(chartIndex)}
-                  style={{ pointerEvents: 'none' }}
-                  fillOpacity={opacity / 12}
-                  strokeOpacity={opacity / 2}
-                  strokeWidth=".6"
-                />,
-                <circle
-                  key={`${chartIndex}-inner`}
-                  cx={tooltipLeft}
-                  cy={getPathYFromX(chartIndex, tooltipLeft)}
-                  r={4}
-                  fill="white"
-                  stroke={getColorFromPath(chartIndex)}
-                  strokeWidth="1.5"
-                  fillOpacity={opacity}
-                  strokeOpacity={opacity}
-                  style={{ pointerEvents: 'none' }}
-                />,
-              ])}
-            </Group>
+            { charts.map((chartIndex, seriesIndex) => !tooltipData[gIndex] || !tooltipData[gIndex].data || !tooltipData[gIndex].data[seriesIndex] || [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) || getPathYFromX(chartIndex, tooltipLeft) === null ? [] : [
+              <circle
+                key={`${chartIndex}-outer`}
+                cx={tooltipLeft}
+                cy={getPathYFromX(chartIndex, tooltipLeft)}
+                r={12}
+                fill={getColorFromPath(chartIndex)}
+                stroke={getColorFromPath(chartIndex)}
+                style={{ pointerEvents: 'none' }}
+                fillOpacity={opacity / 12}
+                strokeOpacity={opacity / 2}
+                strokeWidth=".6"
+              />,
+              <circle
+                key={`${chartIndex}-inner`}
+                cx={tooltipLeft}
+                cy={getPathYFromX(chartIndex, tooltipLeft)}
+                r={4}
+                fill="white"
+                stroke={getColorFromPath(chartIndex)}
+                strokeWidth="1.5"
+                fillOpacity={opacity}
+                strokeOpacity={opacity}
+                style={{ pointerEvents: 'none' }}
+              />,
+            ])}
           </Group>))
       }
     </Group>
