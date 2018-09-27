@@ -19,6 +19,7 @@ import throttle from 'lodash.throttle';
 import moize from 'moize';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import { compose } from 'recompose';
+import commarize from './utils/commarize';
 import withParentSize from './enhancer/withParentSize';
 import RangeSelectionTooltipComp from './rangeSelectionTooltip';
 import LegendShapeComp from './LegendShape';
@@ -151,7 +152,7 @@ export class LineChart extends React.PureComponent {
     }),
   });
 
-  formatYAxisTick = (num) => num < 1 ? num.toFixed(2) : (format('.2s')(num)).toString().replace(/\.0/, '')
+  formatYAxisTick = (num) => num < 1 ? num.toFixed(2) : commarize(num);
 
   shouldXAxisHighlight = (date) => {
     const dateDiff = (this.data.dates[this.data.dates.length - 1].getTime() - this.data.dates[0].getTime()) / (1000 * 60 * 60);
