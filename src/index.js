@@ -91,7 +91,7 @@ export class LineChart extends React.PureComponent {
     const data = this.data || props.data;
     const { minHeight } = this.getConfig();
     if (!data.charts.length) return 0;
-    return ((parentHeight - 60) / data.charts.length) < minHeight ? minHeight : (parentHeight - (60 + this.getConfig().margin.bottom)) / data.charts.length;
+    return Math.max((parentHeight - (75 + this.getConfig().margin.bottom)) / data.charts.length, minHeight);
   };
 
 
@@ -485,7 +485,7 @@ export class LineChart extends React.PureComponent {
         <div
           id="charts"
           style={{
-            height: parentHeight - 60, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
+            height: parentHeight - 75, overflowY: 'auto', overflowX: 'hidden', cursor: 'crosshair',
           }}
         >
           <div style={{ position: 'relative', height: height * this.data.charts.length }}>
