@@ -20,7 +20,7 @@ function Hoverline({
       {
         indexMap.map((charts, gIndex) => (
           <Group top={(singleChartHeight * gIndex) + margin.top}>
-            { charts.map((chartIndex, seriesIndex) => !tooltipData[gIndex] || !tooltipData[gIndex].data || !tooltipData[gIndex].data[seriesIndex] || [null, undefined].includes(tooltipData[gIndex].data[seriesIndex].data) || getPathYFromX(chartIndex, tooltipLeft) === null ? [] : [
+            { charts.map((chartIndex, seriesIndex) => !tooltipData[gIndex] || !tooltipData[gIndex].data || !tooltipData[gIndex].data[seriesIndex] || [null, undefined, 'null', 'undefined'].includes(tooltipData[gIndex].data[seriesIndex].data) || getPathYFromX(chartIndex, tooltipLeft) === null ? [] : [
               <circle
                 key={`${chartIndex}-outer`}
                 cx={tooltipLeft}

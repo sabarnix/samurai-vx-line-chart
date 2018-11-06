@@ -23,7 +23,7 @@ function Tooltips({
         >
           <ul className="tooltip-data" style={{ maxHeight: singleChartHeight - (top + 20) }}>
             <li key="header" className="tooltip-header">{date}</li>
-            {tooltipData.filter(({ data: pointData }) => ![null, undefined, 'undefined'].includes(pointData)).map(({ label, data: pointData, series }) =>
+            {tooltipData.filter(({ data: pointData }) => ![null, undefined, 'undefined', 'null'].includes(pointData)).map(({ label, data: pointData, series }) =>
               (
                 <li key={pointData + label + series}>
                   <span className="marker" style={{ backgroundColor: colorScale(series) }}></span>
