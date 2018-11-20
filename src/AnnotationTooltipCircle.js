@@ -3,14 +3,21 @@ import { Group } from '@vx/group';
 import PropTypes from 'prop-types';
 
 function AnnotationTooltipCircle({
-  timestamp, x, onClick, id, active,
+  timestamp, x, onClick, id, active, config: { color: baseColor, activeColor, highlightColor }, shouldHighlight,
 }) {
   const handleClick = () => {
     if (onClick) {
       onClick(id);
     }
   };
-  const color = active ? '#eb5b59' : '#575d6d';
+  let color = baseColor;
+  if (shouldHighlight) {
+    color = highlightColor;
+  }
+  if (active) {
+    color = activeColor;
+  }
+
   return (
     <Group onClick={handleClick}>
       <circle
@@ -44,6 +51,8 @@ AnnotationTooltipCircle.propTypes = {
   onClick: PropTypes.func,
   id: PropTypes.any,
   active: PropTypes.bool,
+  config: PropTypes.object,
+  shouldHighlight: PropTypes.bool,
 };
 
 export default AnnotationTooltipCircle;

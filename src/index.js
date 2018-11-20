@@ -229,6 +229,12 @@ export class LineChart extends React.PureComponent {
         cursor: 'pointer',
       },
     },
+    annotationCircle: {
+      color: '#575d6d',
+      activeColor: '#eb5b59',
+      highlightColor: '#62CCA8',
+      shouldHighlight: (data) => data.ci,
+    },
     annotationHover: {
       strokeWidth: '4',
       style: {

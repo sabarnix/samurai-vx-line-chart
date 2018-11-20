@@ -35,12 +35,14 @@ function AnnotationTimeine({
           stroke={config.annotation.stroke}
         />
         <Group>
-          {annotations.map(({ timestamp }, index) => (<AnnotationTooltipCircle
+          {annotations.map(({ timestamp, data = {} }, index) => (<AnnotationTooltipCircle
             timestamp={timestamp}
             x={xScale(timestamp)}
             onClick={onClick}
             id={index}
             active={index === active}
+            shouldHighlight={config.annotationCircle.shouldHighlight(data)}
+            config={config.annotationCircle}
           />))}
         </Group>
       </Group>
