@@ -68,13 +68,18 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
     }
 
     renderAnnotationTimeline = () => {
-      const { parentWidth, annotation, annotationSelection: { activeAnnotation } } = this.props;
+      const {
+        parentWidth, annotation, annotationSelection: { activeAnnotation }, data: { dates },
+      } = this.props;
+
+      const effectiveAnnotations = annotation.filter(({ timestamp }) => timestamp > dates[0] && timestamp < dates[dates.length - 1]);
+
       return (
         <svg height={80} width={parentWidth}>
           <AnnotationTimelineComponent
             xMax={this.chart.xMax}
             config={this.chart.getConfig()}
-            annotations={annotation}
+            annotations={effectiveAnnotations}
             xScale={this.chart.xScale}
             onClick={this.handleClick}
             active={activeAnnotation}
