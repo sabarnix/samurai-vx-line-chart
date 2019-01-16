@@ -2,7 +2,7 @@
   "name": "samurai-vx-line-chart",
   "version": "0.0.3",
   "description": "Multiple line charts with common fixed xAxis using VX",
-  "main": "build/index.js",
+  "main": "src/index.js",
   "keywords": [
     "react",
     "reactjs",

@@ -32,7 +32,6 @@ import withLegendToggle from './enhancer/withLegendToggle';
 import HoverLineComp from './hoverline';
 import TooltipsComp from './tooltips';
 import { getXScale, getYScale } from './utils/scales';
-import findPathYatX from './utils/findPathYatX';
 import Delay from './utils/delay';
 import './style.scss';
 
@@ -55,8 +54,9 @@ export class LineChart extends React.PureComponent {
       this.update(nextProps);
     }
 
-    if (this.props.data !== nextProps.data || this.props.legendToggle !== nextProps.legendToggle) {
+    if (this.props.data !== nextProps.data || this.props.legendToggle !== nextProps.legendToggle || this.props.hasAnnotation !== nextProps.hasAnnotation) {
       this.resetAllSelection();
+      this.pathYCacheClear();
     }
   }
 
@@ -135,12 +135,6 @@ export class LineChart extends React.PureComponent {
 
   getIndexMap = () => this.data.charts.map(({ chartId, series }) =>
     series.map(({ label }) => `${chartId}-${label}`));
-
-  getPathYFromX = (index, x) => {
-    const path = this.pathRefs[index];
-
-    return path && findPathYatX(x, path, index);
-  };
 
   getColorFromPath = (index) => this.pathRefs[index] && this.pathRefs[index].getAttribute('stroke');
 
@@ -347,6 +341,9 @@ export class LineChart extends React.PureComponent {
         })),
       })),
       tooltipLeft: this.xScale(dates[effectiveIndex]),
+      tooltipTop: data.charts.map(({
+ yScale, series, yScaleLeft, yScaleRight
+}) => series.map(({ data: seriesData }, isRightSeries) => data.isDualAxes ? (isRightSeries ? yScaleRight(seriesData[effectiveIndex]) : yScaleLeft(seriesData[effectiveIndex])) : yScale(seriesData[effectiveIndex]))), // eslint-disable-line no-nested-ternary
     });
   }, 100);
 
@@ -470,6 +467,7 @@ export class LineChart extends React.PureComponent {
       parentHeight,
       tooltipData,
       tooltipLeft,
+      tooltipTop,
       brush,
       range,
       legendToggle,
@@ -583,8 +581,8 @@ export class LineChart extends React.PureComponent {
                 }}
                 tooltipData={tooltipData}
                 tooltipLeft={tooltipLeft}
+                tooltipTop={tooltipTop}
                 indexMap={this.getIndexMap()}
-                getPathYFromX={this.getPathYFromX}
                 getColorFromPath={this.getColorFromPath}
                 margin={this.getConfig().margin}
                 opacity={tooltipData ? 1 : 0}
@@ -651,6 +649,7 @@ LineChart.propTypes = {
   enableRangeSelection: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
   config: PropTypes.object,
+  tooltipTop: PropTypes.array,
   parentWidth: PropTypes.number,
   parentHeight: PropTypes.number,
   hideTooltip: PropTypes.func,

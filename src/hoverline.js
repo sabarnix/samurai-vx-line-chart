@@ -4,8 +4,8 @@ import { Group } from '@vx/group';
 import PropTypes from 'prop-types';
 
 function Hoverline({
-  from, to, tooltipLeft, indexMap, getPathYFromX, margin, singleChartHeight, opacity, getColorFromPath,
-  tooltipData, hoverlineColor,
+  from, to, tooltipLeft, indexMap, margin, singleChartHeight, opacity, getColorFromPath,
+  tooltipData, hoverlineColor, tooltipTop,
 }) {
   return (
     <Group style={{ opacity }} left={margin.left}>
@@ -20,11 +20,11 @@ function Hoverline({
       {
         indexMap.map((charts, gIndex) => (
           <Group top={(singleChartHeight * gIndex) + margin.top}>
-            { charts.map((chartIndex, seriesIndex) => !tooltipData[gIndex] || !tooltipData[gIndex].data || !tooltipData[gIndex].data[seriesIndex] || [null, undefined, 'null', 'undefined'].includes(tooltipData[gIndex].data[seriesIndex].data) || getPathYFromX(chartIndex, tooltipLeft) === null ? [] : [
+            { charts.map((chartIndex, seriesIndex) => !tooltipData[gIndex] || !tooltipData[gIndex].data || !tooltipData[gIndex].data[seriesIndex] || [null, undefined, 'null', 'undefined'].includes(tooltipData[gIndex].data[seriesIndex].data) ? [] : [
               <circle
                 key={`${chartIndex}-outer`}
                 cx={tooltipLeft}
-                cy={getPathYFromX(chartIndex, tooltipLeft)}
+                cy={tooltipTop[gIndex][seriesIndex]}
                 r={12}
                 fill={getColorFromPath(chartIndex)}
                 stroke={getColorFromPath(chartIndex)}
@@ -36,7 +36,7 @@ function Hoverline({
               <circle
                 key={`${chartIndex}-inner`}
                 cx={tooltipLeft}
-                cy={getPathYFromX(chartIndex, tooltipLeft)}
+                cy={tooltipTop[gIndex][seriesIndex]}
                 r={4}
                 fill="white"
                 stroke={getColorFromPath(chartIndex)}
@@ -56,13 +56,13 @@ Hoverline.propTypes = {
   to: PropTypes.object,
   tooltipLeft: PropTypes.number,
   indexMap: PropTypes.array,
-  getPathYFromX: PropTypes.func,
   getColorFromPath: PropTypes.func,
   margin: PropTypes.object,
   singleChartHeight: PropTypes.number,
   opacity: PropTypes.number,
   tooltipData: PropTypes.array.isRequired,
   hoverlineColor: PropTypes.string,
+  tooltipTop: PropTypes.array,
 };
 
 export default Hoverline;
