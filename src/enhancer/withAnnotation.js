@@ -17,6 +17,12 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
 
     getAnnotationLeft = (timestamp) => this.chart.xScale(timestamp);
 
+    getAnnotations = () => {
+      const { annotation, data: { dates } } = this.props;
+
+      return annotation.filter(({ timestamp }) => timestamp > dates[0] && timestamp < dates[dates.length - 1]);
+    }
+
     handleClick = (index) => {
       const { annotationSelection: { activeAnnotation }, updateActive, closeActive } = this.props;
       if (index === activeAnnotation) {
@@ -28,7 +34,8 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
 
     renderAnnotation = () => {
       const height = (this.chart.getSingleChartHeight() * this.chart.data.charts.length) + this.chart.getConfig().margin.bottom;
-      const { annotation, annotationSelection: { activeAnnotation, hasActiveAnnotation } } = this.props;
+      const { annotationSelection: { activeAnnotation, hasActiveAnnotation } } = this.props;
+      const annotation = this.getAnnotations();
       if (annotation && annotation.length && AnnotationComponent && hasActiveAnnotation) {
         const { timestamp } = annotation[activeAnnotation];
         return (
@@ -47,11 +54,13 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
 
     renderAnnotationTooltip = () => {
       const {
-        annotation,
         annotationSelection: { activeAnnotation: activeAnnotationIndex, hasActiveAnnotation },
         closeActive,
         annotationTooltipComponent: AnnotationTooltipComponent,
       } = this.props;
+
+      const annotation = this.getAnnotations();
+
       if (!hasActiveAnnotation) return null;
       const activeAnnotation = annotation[activeAnnotationIndex];
       if (!activeAnnotation) return null;
@@ -69,17 +78,17 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
 
     renderAnnotationTimeline = () => {
       const {
-        parentWidth, annotation, annotationSelection: { activeAnnotation }, data: { dates },
+        parentWidth, annotationSelection: { activeAnnotation },
       } = this.props;
 
-      const effectiveAnnotations = annotation.filter(({ timestamp }) => timestamp > dates[0] && timestamp < dates[dates.length - 1]);
+      const annotation = this.getAnnotations();
 
       return (
         <svg height={80} width={parentWidth}>
           <AnnotationTimelineComponent
             xMax={this.chart.xMax}
             config={this.chart.getConfig()}
-            annotations={effectiveAnnotations}
+            annotations={annotation}
             xScale={this.chart.xScale}
             onClick={this.handleClick}
             active={activeAnnotation}
@@ -117,6 +126,7 @@ export default ({ AnnotationComponent, AnnotationTimelineComponent }) => (BaseCo
     closeActive: PropTypes.func,
     parentWidth: PropTypes.number,
     annotationTooltipComponent: PropTypes.func,
+    data: PropTypes.object,
   };
 
   return compose(
