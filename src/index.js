@@ -56,7 +56,6 @@ export class LineChart extends React.PureComponent {
 
     if (this.props.data !== nextProps.data || this.props.legendToggle !== nextProps.legendToggle || this.props.hasAnnotation !== nextProps.hasAnnotation) {
       this.resetAllSelection();
-      this.pathYCacheClear();
     }
   }
 
