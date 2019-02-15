@@ -9,6 +9,7 @@ const formatNumber = format(',');
 function Tooltips({
   top, left, data, singleChartHeight, xMax, opacity, colorScale,
 }) {
+  console.log(data);
   return (
     <div style={{ opacity }} className="samurai-vx-tooltip">
       {data.map(({ date, data: tooltipData, id }, gIndex) => (
@@ -23,13 +24,16 @@ function Tooltips({
         >
           <ul className="tooltip-data" style={{ maxHeight: singleChartHeight - (top + 20) }}>
             <li key="header" className="tooltip-header">{date}</li>
-            {tooltipData.filter(({ data: pointData }) => ![null, undefined, 'undefined', 'null'].includes(pointData)).map(({ label, data: pointData, series }) =>
-              (
-                <li key={pointData + label + series}>
-                  <span className="marker" style={{ backgroundColor: colorScale(series) }}></span>
-                  {label}: <span className="data">{formatNumber(pointData)}</span>
-                </li>
-              ))}
+            {tooltipData
+              .filter(({ data: pointData }) => ![null, undefined, 'undefined', 'null'].includes(pointData))
+              .sort(({ data: dataL = 0 }, { data: dataR } = 0) => Number(dataR) - Number(dataL))
+              .map(({ label, data: pointData, series }) =>
+                (
+                  <li key={pointData + label + series}>
+                    <span className="marker" style={{ backgroundColor: colorScale(series) }}></span>
+                    {label}: <span className="data">{formatNumber(pointData)}</span>
+                  </li>
+                ))}
           </ul>
         </Tooltip>))}
     </div>
