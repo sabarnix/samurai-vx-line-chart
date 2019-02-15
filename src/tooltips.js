@@ -9,7 +9,6 @@ const formatNumber = format(',');
 function Tooltips({
   top, left, data, singleChartHeight, xMax, opacity, colorScale,
 }) {
-  console.log(data);
   return (
     <div style={{ opacity }} className="samurai-vx-tooltip">
       {data.map(({ date, data: tooltipData, id }, gIndex) => (
